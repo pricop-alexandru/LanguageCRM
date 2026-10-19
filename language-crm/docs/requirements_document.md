@@ -77,40 +77,40 @@ Fiecare User Story respectă șablonul standard: **`AS A <USER>, I CAN <DO>, SO 
 
 ### Modulul 1: Chatbot & Limbaj Natural (Natural Language Processing)
 * **US-01:**
-  * **Story:** *As a* client, *I can* scriu un mesaj liber în fereastra de chat, *so that* pot comunica cu compania fără a naviga prin meniuri complexe.
+  * **Story:** *Ca si* client, *pot sa* scriu un mesaj liber în fereastra de chat, *astfel incat* pot comunica cu compania fără a naviga prin meniuri complexe.
 * **US-02:**
-  * **Story:** *As a* sistem (chatbot), *I can* parsa mesajul text primit de la client pentru a detecta intenția (ex: comandă, întrebare stoc), *so that* pot rula logica de business corespunzătoare.
+  * **Story:** *Ca si* sistem (chatbot), *pot* parsa mesajul text primit de la client pentru a detecta intenția (ex: comandă, întrebare stoc), *astfel incat* pot rula logica de business corespunzătoare.
 * **US-03:**
-  * **Story:** *As a* client, *I can* primesc un răspuns instantaneu din partea chatbotului în cadrul aceleiași ferestre de chat, *so that* am confirmarea interacțiunii în timp real.
+  * **Story:** *Ca si* client, *pot sa* primesc un răspuns instantaneu din partea chatbotului în cadrul aceleiași ferestre de chat, *astfel incat* am confirmarea interacțiunii în timp real.
 * **US-04:**
-  * **Story:** *As a* client, *I can* primesc o clarificare de la chatbot dacă mesajul meu este ambiguu sau lipsesc detalii (ex: cantitatea), *sothat* comanda să poată fi corect înțeleasă.
+  * **Story:** *Ca si* client, *pot sa* primesc o clarificare de la chatbot dacă mesajul meu este ambiguu sau lipsesc detalii (ex: cantitatea), *sothat* comanda să poată fi corect înțeleasă.
 
 ### Modulul 2: Gestiunea Clienților (Clients & CRM)
 * **US-05:**
-  * **Story:** *As a* sistem (chatbot), *I can* extrage automat datele de contact (nume, telefon, email) dintr-o conversație, *so that* creez un profil nou de client în baza de date SQLite fără intervenție umană.
+  * **Story:** *Ca si* sistem (chatbot), *pot* extrage automat datele de contact (nume, telefon, email) dintr-o conversație, *astfel incat* sa creez un profil nou de client în baza de date SQLite fără intervenție umană.
 * **US-06:**
-  * **Story:** *As a* sistem, *I can* verifica dacă un client există deja în baza de date după numărul de telefon sau nume, *so that* nu duplic înregistrările.
+  * **Story:** *Ca si* sistem, *pot* verifica dacă un client există deja în baza de date după numărul de telefon sau nume, *astfel incat* sa nu duplic înregistrările.
 * **US-07:**
-  * **Story:** *As a* manager, *I can* vizualiza lista completă a clienților înregistrați automat de chatbot într-un tabel dedicat pe dashboard, *so that* pot analiza baza de date a companiei.
+  * **Story:** *Ca si* manager, *pot* vizualiza lista completă a clienților înregistrați automat de chatbot într-un tabel dedicat pe dashboard, *astfel incat* sa pot analiza baza de date a companiei.
 
 ### Modulul 3: Gestiunea Stocurilor & Inventar (Inventory)
 * **US-08:**
-  * **Story:** *As a* manager, *I can* adăuga produse noi și cantități inițiale în stoc prin intermediul interfeței backend/bazei de date, *so that* chatbotul să aibă de unde scădea produsele.
+  * **Story:** *Ca si* manager, *pot* adăuga produse noi și cantități inițiale în stoc prin intermediul interfeței backend/bazei de date, *astfel incat* chatbotul să aibă de unde scădea produsele.
 * **US-09:**
-  * **Story:** *As a* sistem, *I can* interoga automat stocul unui produs în momentul în care un client solicită o cantitate prin chat, *so that* pot lua o decizie de validare.
+  * **Story:** *Ca si* sistem, *pot* interoga automat stocul unui produs în momentul în care un client solicită o cantitate prin chat, *astfel incat* sa pot lua o decizie de validare.
 * **US-10:**
-  * **Story:** *As a* manager, *I can* vizualiza nivelul curent al stocurilor în timp real pe dashboard, *so that* știu când este nevoie de reaprovizionare.
+  * **Story:** *Ca si* manager, *pot* vizualiza nivelul curent al stocurilor în timp real pe dashboard, *astfel incat* sa știu când este nevoie de reaprovizionare.
 
 ### Modulul 4: Automatizarea Comenzilor (Orders Automation)
 * **US-11:**
-  * **Story:** *As a* client, *I can* plasa o comandă completă doar tastând textul dorit în chat, *so that* procesul de cumpărare să fie complet autonom și automatizat.
+  * **Story:** *Ca si* client, *pot* plasa o comandă completă doar tastând textul dorit în chat, *astfel incat* procesul de cumpărare să fie complet autonom și automatizat.
 * **US-12:**
-  * **Story:** *As a* sistem, *I can* valida automat comanda dacă produsul există în stocul cerut, actualizând (scăzând) stocul din baza de date SQLite, *so that* inventarul să rămână corect.
+  * **Story:** *Ca si* sistem, *pot* valida automat comanda dacă produsul există în stocul cerut, actualizând (scăzând) stocul din baza de date SQLite, *astfel incat* inventarul să rămână corect.
 * **US-13:**
-  * **Story:** *As a* client, *I can* primesc un mesaj automat de refuz sau alternativă în chat dacă stocul este insuficient, *so that* știu că produsul nu este momentan disponibil.
+  * **Story:** *Ca si* client, *pot sa* primesc un mesaj automat de refuz sau alternativă în chat dacă stocul este insuficient, *astfel incat* sa știu că produsul nu este momentan disponibil.
 * **US-14:**
-  * **Story:** *As a* manager, *I can* vedea istoricul tuturor comenzilor generate automat de chatbot într-un tabel centralizat, *so that* pot urmări vânzările companiei.
+  * **Story:** *Ca si* manager, *pot* vedea istoricul tuturor comenzilor generate automat de chatbot într-un tabel centralizat, *astfel incat* sa pot urmări vânzările companiei.
 
 ### Modulul 5: Alerte & Administrare Excepții
 * **US-15:**
-  * **Story:** *As a* manager, *I can* vizualiza o alertă vizuală în dashboard atunci când stocul unui produs scade sub o limită critică, *so that* pot interveni operativ.
+  * **Story:** *Ca si* manager, *pot* vizualiza o alertă vizuală în dashboard atunci când stocul unui produs scade sub o limită critică, *astfel incat* sa pot interveni operativ.
