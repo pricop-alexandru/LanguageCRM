@@ -1,0 +1,7 @@
+Comenzi de rulat la inceperea workflow-ului:
+git fetch
+git pull
+docker compose up --build
+
+Pentru exit din container:
+docker composed down
