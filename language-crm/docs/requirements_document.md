@@ -49,7 +49,7 @@ Sistemul deservește trei categorii principale de utilizatori (inclusiv actori a
 * **CNF-02 (Portabilitate):** Aplicația trebuie să ruleze identic pe orice sistem de operare folosind containere Docker și `docker-compose`.
 * **CNF-03 (Securitate):** Datele sensibile și cheile API nu vor fi niciodată expuse sau urcate în repository-ul public (protejate prin `.gitignore`).
 * **CNF-04 (Lizibilitate):** Aplicația trebuie să fie usor de vizualizat pentru utilizatori.
-
+* **CNF-05 (Gestionarea):** Aplicatia trebuie sa poata gestiona comenzi concurente.
 ---
 
 ## 5. Use Case Diagram (Reprezentare UML / Mermaid)
@@ -83,7 +83,7 @@ Fiecare User Story respectă șablonul standard: **`AS A <USER>, I CAN <DO>, SO 
 * **US-03:**
   * **Story:** *Ca si* client, *pot sa* primesc un răspuns instantaneu din partea chatbotului în cadrul aceleiași ferestre de chat, *astfel incat* am confirmarea interacțiunii în timp real.
 * **US-04:**
-  * **Story:** *Ca si* client, *pot sa* primesc o clarificare de la chatbot dacă mesajul meu este ambiguu sau lipsesc detalii (ex: cantitatea), *sothat* comanda să poată fi corect înțeleasă.
+  * **Story:** *Ca si* client, *pot sa* primesc o clarificare de la chatbot dacă mesajul meu este ambiguu sau lipsesc detalii (ex: cantitatea), *astfel incat* comanda să poată fi corect înțeleasă.
 
 ### Modulul 2: Gestiunea Clienților (Clients & CRM)
 * **US-05:**
@@ -95,7 +95,7 @@ Fiecare User Story respectă șablonul standard: **`AS A <USER>, I CAN <DO>, SO 
 
 ### Modulul 3: Gestiunea Stocurilor & Inventar (Inventory)
 * **US-08:**
-  * **Story:** *Ca si* manager, *pot* adăuga produse noi și cantități inițiale în stoc prin intermediul interfeței backend/bazei de date, *astfel incat* chatbotul să aibă de unde scădea produsele.
+  * **Story:** *Ca si* manager, *pot* adăuga produse noi și cantități inițiale în stoc prin intermediul interfeței backend/bazei de date, *astfel incat* chatbotul să aibă de unde scădea cantitatea produselor.
 * **US-09:**
   * **Story:** *Ca si* sistem, *pot* interoga automat stocul unui produs în momentul în care un client solicită o cantitate prin chat, *astfel incat* sa pot lua o decizie de validare.
 * **US-10:**
@@ -110,7 +110,12 @@ Fiecare User Story respectă șablonul standard: **`AS A <USER>, I CAN <DO>, SO 
   * **Story:** *Ca si* client, *pot sa* primesc un mesaj automat de refuz sau alternativă în chat dacă stocul este insuficient, *astfel incat* sa știu că produsul nu este momentan disponibil.
 * **US-14:**
   * **Story:** *Ca si* manager, *pot* vedea istoricul tuturor comenzilor generate automat de chatbot într-un tabel centralizat, *astfel incat* sa pot urmări vânzările companiei.
+* **US-15:**
+  * **Story:** *Ca si* sistem, *pot* vedea istoricul comenzilor clientului, *astfel incat* sa pot personaliza experienta cu clientul si recomanda produse asemanatoare.
+* **US-16:**
+  * **Story:** *Ca si* sistem, *pot* decide cand sa folosesc tool-urile de personalizare a interactiunii cu clientul, *astfel incat* sa pot mentine o comunicare eficienta in functie de necesitati.
+
 
 ### Modulul 5: Alerte & Administrare Excepții
-* **US-15:**
-  * **Story:** *Ca si* manager, *pot* vizualiza o alertă vizuală în dashboard atunci când stocul unui produs scade sub o limită critică, *astfel incat* sa pot interveni operativ.
+* **US-17:**
+  * **Story:** *Ca si* manager, *pot* vizualiza o alertă în dashboard atunci când stocul unui produs scade sub o limită critică, *astfel incat* sa pot interveni prompt.
