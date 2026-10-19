@@ -3,12 +3,32 @@
   <head>
     <meta charset="UTF-8" />
     <title>LanguageCRM</title>
+    <style>
+      body {
+        background-color: black;
+      }
+      .center {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 200px;
+      }
+      .title{
+        font-family: Arial, Helvetica, sans-serif;
+        color: white;
+      }
+      .padding{
+        padding:20px;
+      }
+    </style>
   </head>
   <body>
-    <h1>LanguageCRM - Natural Language Interface</h1>
-    <input id="promptInput" type="text" placeholder="Ex: Add client John..." style="width: 300px;" />
-    <button id="sendBtn">Send</button>
-    <p id="responseArea">The response will appear here...</p>
+    <h1 class="center title">LanguageCRM - Natural Language Interface</h1>
+    <center>
+      <input id="promptInput" type="text" placeholder="Ex: Add client John..." style="width: 1000px; padding:20px;" />
+      <button id="sendBtn" class="padding">Send</button>
+      <p id="responseArea" class="title">The response will appear here...</p>
+    </center>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
