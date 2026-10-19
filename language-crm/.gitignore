@@ -1,0 +1,53 @@
+# ==========================================
+# 1. PYTHON & UV (Backend)
+# ==========================================
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+ENV/
+.uv/
+
+# ==========================================
+# 2. TESTARE & CODE COVERAGE (pytest)
+# ==========================================
+.pytest_cache/
+.coverage
+htmlcov/
+coverage.xml
+
+# ==========================================
+# 3. BAZA DE DATE SQLITE (Locala)
+# ==========================================
+# Ca sa nu ne suprascriem baza de date locala, ignoram fisierele sqlite
+*.db
+*.sqlite
+*.sqlite3
+*.db-journal
+
+# ==========================================
+# 4. TYPESCRIPT / NODE / VITE (Frontend)
+# ==========================================
+node_modules/
+dist/
+dist-ssr/
+*.local
+.vite/
+npm-debug.log*
+
+# ==========================================
+# 5. VARIABILE DE MEDIU & CHEI API (AI/LLM)
+# ==========================================
+# De pus cheile secrete aici
+.env
+.env.*
+!.env.example
+
+# ==========================================
+# 6. IDE & SISTEM DE OPERARE
+# ==========================================
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
