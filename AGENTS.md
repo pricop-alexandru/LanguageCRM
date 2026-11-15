@@ -35,5 +35,5 @@ Guidance for coding agents working in the **LanguageCRM** repository.
 
 - Never commit secrets, `.env` files, API keys, or local SQLite database files (`*.db`, `*.sqlite`, `*.sqlite3`)—these are ignored in `.gitignore`.
 - Do not commit editor-specific folders like `.vscode/` or `.idea/`.
-- Use feature branches and Pull Requests rather than committing directly to `main`.
-- Keep `AGENTS.md` and `README.md` up to date whenever project structure, setup commands, or conventions change.
+- Use feature branches and Pull Requests rather than committing directly to `main` (see `CONTRIBUTING.md`).
+- Keep `AGENTS.md`, `CONTRIBUTING.md`, and `README.md` up to date whenever project structure, setup commands, or conventions change.

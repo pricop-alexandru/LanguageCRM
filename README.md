@@ -24,6 +24,7 @@ An autonomous natural-language CRM platform centered around a conversational cha
 ├── docs/                 # Requirements, agile planning, and setup notes
 ├── docker-compose.yml    # Multi-service development setup
 ├── AGENTS.md             # Guidance for AI coding agents
+├── CONTRIBUTING.md       # Branching, PR, commit, and testing guidelines
 ├── .gitignore
 └── README.md
 ```
