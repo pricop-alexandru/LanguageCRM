@@ -27,8 +27,31 @@ jobs:
       - name: Install dependencies
         run: uv sync --frozen --extra dev
 
-      - name: Run pytest
-        run: uv run --frozen --extra dev pytest
+      - name: Run pytest with coverage
+        run: uv run --frozen --extra dev pytest --cov=app --cov-report=term --cov-report=json:coverage.json
+
+      - name: Extract coverage percentage
+        id: cov
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          python -c "
+          import json, os
+          pct = round(json.load(open('coverage.json'))['totals']['percent_covered'])
+          color = 'brightgreen' if pct >= 80 else ('yellow' if pct >= 60 else 'red')
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+              f.write(f'pct={pct}\ncolor={color}\n')
+          "
+
+      - name: Update coverage badge Gist
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && secrets.GIST_SECRET != '' && vars.COVERAGE_GIST_ID != ''
+        uses: schneegans/dynamic-badges-action@v1.7.0
+        with:
+          auth: ${{ secrets.GIST_SECRET }}
+          gistID: ${{ vars.COVERAGE_GIST_ID }}
+          filename: languagecrm-coverage.json
+          label: coverage
+          message: ${{ steps.cov.outputs.pct }}%
+          color: ${{ steps.cov.outputs.color }}
 
   frontend:
     name: Frontend build (tsc & vite)

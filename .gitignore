@@ -16,6 +16,7 @@ ENV/
 .coverage
 htmlcov/
 coverage.xml
+coverage.json
 
 # ==========================================
 # 3. SQLITE DATABASE (Local)

@@ -1,5 +1,7 @@
 # LanguageCRM
 
+[![CI](https://github.com/pricop-alexandru/LanguageCRM/actions/workflows/ci.yml/badge.svg)](https://github.com/pricop-alexandru/LanguageCRM/actions/workflows/ci.yml)
+
 An autonomous natural-language CRM platform centered around a conversational chatbot that handles customer interactions, inventory checks, and order placement.
 
 ## Tech Stack
