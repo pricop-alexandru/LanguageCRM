@@ -64,6 +64,6 @@ npm run dev
 
 ## Documentation
 
-- [Requirements Document](docs/requirements_document.md)
-- [Agile Planning](docs/agile_planning.md)
-- [Workplace Setup Notes](docs/workplace_setup.txt)
+- [Requirements Document (RO)](docs/requirements_document.md)
+- [Agile Planning (RO)](docs/agile_planning.md)
+- [Workplace Setup Notes (RO)](docs/workplace_setup.txt)
