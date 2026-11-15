@@ -1,6 +1,7 @@
 # LanguageCRM
 
 [![CI](https://github.com/pricop-alexandru/LanguageCRM/actions/workflows/ci.yml/badge.svg)](https://github.com/pricop-alexandru/LanguageCRM/actions/workflows/ci.yml)
+[![Coverage](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/taralesca/8a654ac9b3c3ab58c670413b2eba6d1f/raw/languagecrm-coverage.json)](https://gist.github.com/taralesca/8a654ac9b3c3ab58c670413b2eba6d1f)
 
 An autonomous natural-language CRM platform centered around a conversational chatbot that handles customer interactions, inventory checks, and order placement.
 
