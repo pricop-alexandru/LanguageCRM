@@ -43,11 +43,11 @@ jobs:
           "
 
       - name: Update coverage badge Gist
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && secrets.GIST_SECRET != '' && vars.COVERAGE_GIST_ID != ''
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && secrets.GIST_SECRET != '' && (secrets.COVERAGE_GIST_ID != '' || vars.COVERAGE_GIST_ID != '')
         uses: schneegans/dynamic-badges-action@v1.7.0
         with:
           auth: ${{ secrets.GIST_SECRET }}
-          gistID: ${{ vars.COVERAGE_GIST_ID }}
+          gistID: ${{ secrets.COVERAGE_GIST_ID || vars.COVERAGE_GIST_ID }}
           filename: languagecrm-coverage.json
           label: coverage
           message: ${{ steps.cov.outputs.pct }}%
