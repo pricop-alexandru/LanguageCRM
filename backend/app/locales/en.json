@@ -1,0 +1,9 @@
+{
+  "greeting": "Hello! How can I help you today? You can ask about stock or place an order.",
+  "order_missing_product": "I understood your order intent. Please specify the product and desired quantity.",
+  "order_summary": "Order intent detected: {qty}{product}{client}.",
+  "order_client_prefix": " for {client}",
+  "stock_query_missing_product": "I understood you are asking about stock. Please specify the product.",
+  "stock_query_summary": "Checking stock for product: {product}.",
+  "unknown": "I could not determine the exact intent. Please clearly specify the product and quantity or your stock question."
+}

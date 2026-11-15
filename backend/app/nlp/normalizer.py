@@ -1,11 +1,11 @@
 import re
 import unicodedata
 
-from app.nlp.ro_locale import ROMANIAN_NUMERALS
+from app.nlp.lang import ALL_NUMERALS
 
 
 def strip_diacritics(text: str) -> str:
-    """Remove Romanian and Latin diacritics."""
+    """Remove Latin diacritics from text."""
     normalized = unicodedata.normalize("NFKD", text)
     return "".join(ch for ch in normalized if not unicodedata.combining(ch))
 
@@ -16,8 +16,8 @@ def normalize_text(text: str) -> str:
     return re.sub(r"\s+", " ", cleaned)
 
 
-def parse_quantity_text(raw: str | None) -> int | None:
-    """Convert a numeric string or Romanian number word into a positive integer."""
+def parse_quantity_text(raw: str | None, numerals: dict[str, int] = ALL_NUMERALS) -> int | None:
+    """Convert a numeric string or numeral word into a positive integer."""
     if not raw:
         return None
     cleaned = normalize_text(raw)
@@ -27,6 +27,6 @@ def parse_quantity_text(raw: str | None) -> int | None:
         return val if val > 0 else None
 
     for token in re.findall(r"[a-z]+", cleaned):
-        if token in ROMANIAN_NUMERALS:
-            return ROMANIAN_NUMERALS[token]
+        if token in numerals:
+            return numerals[token]
     return None

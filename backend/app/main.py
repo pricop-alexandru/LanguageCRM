@@ -29,7 +29,7 @@ def health_check() -> dict[str, str]:
 @app.post("/api/command", response_model=CommandResponse)
 def process_command(data: NaturalLanguagePrompt) -> CommandResponse:
     parsed = parse_message(data.prompt)
-    reply = format_reply(parsed)
+    reply = format_reply(parsed, locale=data.locale)
     return CommandResponse(
         received_prompt=data.prompt,
         intent=parsed.intent,

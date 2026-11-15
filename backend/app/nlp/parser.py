@@ -3,13 +3,14 @@ import os
 from typing import Any
 import httpx
 
+from app.locales import get_messages
 from app.nlp.fallback import (
     extract_client_name,
     extract_quantity_and_product,
     fallback_parse_message,
 )
+from app.nlp.lang import ALL_AMBIGUOUS_PRODUCT_WORDS
 from app.nlp.normalizer import normalize_text
-from app.nlp.ro_locale import AMBIGUOUS_PRODUCT_WORDS, REPLIES
 from app.schemas import ExtractedEntities, IntentType, ParsedMessage
 
 logger = logging.getLogger(__name__)
@@ -20,11 +21,11 @@ HTTP_TIMEOUT_SECONDS = 3.0
 MIN_CONFIDENCE_THRESHOLD = 0.55
 AMBIGUITY_PROB_THRESHOLD = 0.85
 
-VALID_INTENTS: set[str] = {"comanda", "interogare_stoc", "salut", "necunoscut"}
+VALID_INTENTS: set[str] = {"order", "stock_query", "greeting", "unknown"}
 
 
 def build_decider_payload(prompt: str, model: str) -> dict[str, Any]:
-    """Build the OpenRouter Decisions API payload for pplx-decider-v1.3."""
+    """Build the OpenRouter Decisions API payload for pplx-decider."""
     return {
         "model": model,
         "state": prompt,
@@ -32,20 +33,20 @@ def build_decider_payload(prompt: str, model: str) -> dict[str, Any]:
             "intent": {
                 "type": "choice",
                 "instructions": (
-                    "Classify the Romanian customer message intent (works with or without diacritics)."
+                    "Classify the customer message intent (supports English and Romanian with or without diacritics)."
                 ),
                 "criteria": {
-                    "comanda": (
-                        "The customer or operator wants to place an order, buy, or purchase a specific product."
+                    "order": (
+                        "The customer or operator wants to place an order, buy, or purchase a product."
                     ),
-                    "interogare_stoc": (
+                    "stock_query": (
                         "The user asks about stock availability, how many units are available, or if a product is in stock."
                     ),
-                    "salut": (
-                        "The message is solely a greeting (e.g., salut, buna ziua, hello) without an order or stock inquiry."
+                    "greeting": (
+                        "The message is solely a greeting without an order or stock inquiry."
                     ),
-                    "necunoscut": (
-                        "The message is ambiguous, off-topic, unclear, or does not specify which product is being ordered or queried."
+                    "unknown": (
+                        "The message is ambiguous, off-topic, unclear, or does not fit order, stock_query, or greeting."
                     ),
                 },
             },
@@ -81,15 +82,15 @@ def parse_decider_response(prompt: str, data: dict[str, Any]) -> ParsedMessage:
         raise ValueError("Missing 'answers' in OpenRouter Decisions API response")
 
     intent_ans = answers.get("intent") or {}
-    raw_choice = intent_ans.get("choice", "necunoscut")
-    intent: IntentType = raw_choice if raw_choice in VALID_INTENTS else "necunoscut"  # type: ignore[assignment]
+    raw_choice = intent_ans.get("choice", "unknown")
+    intent: IntentType = raw_choice if raw_choice in VALID_INTENTS else "unknown"  # type: ignore[assignment]
     confidence = float(intent_ans.get("confidence", 0.0) or 0.0)
 
     is_ambiguous_prob = _extract_ambiguity_prob(answers.get("is_ambiguous"))
 
     client = extract_client_name(prompt)
     quantity, product = extract_quantity_and_product(prompt, intent)
-    if product and normalize_text(product) in AMBIGUOUS_PRODUCT_WORDS:
+    if product and normalize_text(product) in ALL_AMBIGUOUS_PRODUCT_WORDS:
         product = None
 
     entities = ExtractedEntities(product=product, quantity=quantity, client=client)
@@ -97,7 +98,7 @@ def parse_decider_response(prompt: str, data: dict[str, Any]) -> ParsedMessage:
     # Ambiguity & confidence guardrails:
     if is_ambiguous_prob >= AMBIGUITY_PROB_THRESHOLD or confidence < MIN_CONFIDENCE_THRESHOLD:
         return ParsedMessage(
-            intent="necunoscut", confidence=confidence, entities=entities, source="openrouter"
+            intent="unknown", confidence=confidence, entities=entities, source="openrouter"
         )
 
     return ParsedMessage(
@@ -121,7 +122,7 @@ def call_openrouter_decider(prompt: str, api_key: str, model: str) -> ParsedMess
 def parse_message(prompt: str) -> ParsedMessage:
     """Parse a customer message using OpenRouter Decider with deterministic fallback."""
     if not prompt or not prompt.strip():
-        return ParsedMessage(intent="necunoscut", confidence=1.0)
+        return ParsedMessage(intent="unknown", confidence=1.0)
 
     api_key = os.getenv("OPENROUTER_API_KEY", "").strip()
     model = os.getenv("OPENROUTER_DECIDER_MODEL", DEFAULT_DECIDER_MODEL).strip() or DEFAULT_DECIDER_MODEL
@@ -136,26 +137,27 @@ def parse_message(prompt: str) -> ParsedMessage:
     return fallback_parse_message(prompt)
 
 
-def format_reply(parsed: ParsedMessage) -> str:
+def format_reply(parsed: ParsedMessage, locale: str = "ro") -> str:
     """Generate a localized reply summarizing the detected intent and entities."""
-    if parsed.intent == "salut":
-        return REPLIES["salut"]
-    if parsed.intent == "comanda":
+    replies = get_messages(locale)
+    if parsed.intent == "greeting":
+        return replies["greeting"]
+    if parsed.intent == "order":
         if not parsed.entities.product:
-            return REPLIES["comanda_missing_product"]
+            return replies["order_missing_product"]
         qty_str = f"{parsed.entities.quantity}x " if parsed.entities.quantity else ""
         client_str = (
-            REPLIES["comanda_client_prefix"].format(client=parsed.entities.client)
+            replies["order_client_prefix"].format(client=parsed.entities.client)
             if parsed.entities.client
             else ""
         )
-        return REPLIES["comanda_summary"].format(
+        return replies["order_summary"].format(
             qty=qty_str,
             product=parsed.entities.product,
             client=client_str,
         )
-    if parsed.intent == "interogare_stoc":
+    if parsed.intent == "stock_query":
         if not parsed.entities.product:
-            return REPLIES["interogare_stoc_missing_product"]
-        return REPLIES["interogare_stoc_summary"].format(product=parsed.entities.product)
-    return REPLIES["necunoscut"]
+            return replies["stock_query_missing_product"]
+        return replies["stock_query_summary"].format(product=parsed.entities.product)
+    return replies["unknown"]
