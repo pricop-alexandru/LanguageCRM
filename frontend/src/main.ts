@@ -9,6 +9,10 @@ const input = document.getElementById("promptInput") as HTMLInputElement;
 const button = document.getElementById("sendBtn") as HTMLButtonElement;
 const chatLog = document.getElementById("chatLog") as HTMLDivElement;
 
+function scrollToBottom(): void {
+  chatLog.scrollTop = chatLog.scrollHeight;
+}
+
 function appendMessage(text: string, align: "user" | "bot", bubbleClass: string): HTMLDivElement {
   const row = document.createElement("div");
   row.className = `message-row ${align}`;
@@ -19,7 +23,7 @@ function appendMessage(text: string, align: "user" | "bot", bubbleClass: string)
 
   row.appendChild(bubble);
   chatLog.appendChild(row);
-  chatLog.scrollTop = chatLog.scrollHeight;
+  scrollToBottom();
   return bubble;
 }
 
@@ -56,9 +60,11 @@ button.addEventListener("click", async () => {
     const data: CommandResponse = await response.json();
     loadingMessage.textContent = data.reply;
     loadingMessage.className = "bubble bubble-bot";
+    scrollToBottom();
   } catch (error) {
     loadingMessage.textContent = "Network error: could not reach the server. Please try again.";
     loadingMessage.className = "bubble bubble-error";
+    scrollToBottom();
   } finally {
     isSending = false;
     updateSendButtonState();
