@@ -31,7 +31,7 @@ An autonomous natural-language CRM platform centered around a conversational cha
 
 ## Quick Start (Docker Compose)
 
-Make sure [Docker](https://www.docker.com/) is running, then from the repository root:
+Make sure [Docker](https://www.docker.com/) is running. Optionally, copy `.env.example` to `.env` and set `OPENROUTER_API_KEY` (and `OPENROUTER_DECIDER_MODEL`, defaulting to `perplexity/pplx-decider-flash-v1.3:free`) to enable OpenRouter-based intent parsing (otherwise a local Romanian fallback parser is used). Then from the repository root:
 
 ```bash
 docker compose up --build
@@ -67,12 +67,12 @@ python scripts/setup.py test
 
 ### Backend
 
-Requires Python `>=3.12` and [`uv`](https://docs.astral.sh/uv/) (or `pip`):
+Requires Python `>=3.12` and [`uv`](https://docs.astral.sh/uv/) (or `pip`). See [backend/README.md](backend/README.md) for API & NLP pipeline details:
 
 ```bash
 cd backend
 uv pip install -r pyproject.toml
-uvicorn app.main:app --reload --port 8000
+uvicorn app.main:app --reload --port 8000 --env-file ../.env
 ```
 
 ### Frontend

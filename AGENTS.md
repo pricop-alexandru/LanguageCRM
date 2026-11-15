@@ -5,8 +5,9 @@ Guidance for coding agents working in the **LanguageCRM** repository.
 ## Repository Structure
 
 - `backend/` — Python 3.12 FastAPI + SQLAlchemy + SQLite backend (`uv` / `pyproject.toml`)
-  - `backend/app/` — Application package (`main.py`, `database.py`)
-  - `backend/tests/` — `pytest` test suite (`test_health.py`)
+  - `backend/app/` — Application package (`main.py`, `database.py`, `schemas.py`)
+  - `backend/app/nlp/` — Message parsing & intent detection (OpenRouter `perplexity/pplx-decider-flash-v1.3:free` client, Romanian fallback parser, and `ro_locale.py` language constants)
+  - `backend/tests/` — `pytest` test suite (`test_health.py`, `test_parser.py`)
 - `frontend/` — TypeScript + Vite frontend (`package.json`, Node 20)
   - Uses `import.meta.env.VITE_API_URL` (defaults to `http://localhost:8000`)
 - `scripts/` — Cross-platform developer helpers (`setup.py`)
@@ -18,6 +19,7 @@ Guidance for coding agents working in the **LanguageCRM** repository.
 ## Language Conventions
 
 - **Engineering artifacts in English:** Write all code, comments, docstrings, config descriptions, commit messages, and `README.md` updates in **English**.
+- **User-facing Romanian NLP/copy centralized:** Keep all Romanian user-facing reply templates, numerals, and regex/stopword patterns in `backend/app/nlp/ro_locale.py` rather than hardcoding Romanian strings inline across Python modules.
 - **Course deliverables in Romanian:** Files under `docs/` (`requirements_document.md`, `agile_planning.md`, `workplace_setup.txt`) are maintained in **Romanian** for coursework. Do not translate them to English unless explicitly requested.
 
 ## Running & Verifying Changes

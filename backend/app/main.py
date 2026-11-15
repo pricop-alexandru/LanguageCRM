@@ -1,7 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+
 from app.database import init_db
+from app.nlp.parser import format_reply, parse_message
+from app.schemas import CommandResponse, NaturalLanguagePrompt
 
 app = FastAPI(title="LanguageCRM API")
 
@@ -13,21 +15,26 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 @app.on_event("startup")
-def on_startup():
+def on_startup() -> None:
     init_db()
 
-class NaturalLanguagePrompt(BaseModel):
-    prompt: str
 
 @app.get("/health")
-def health_check():
+def health_check() -> dict[str, str]:
     return {"status": "ok", "service": "LanguageCRM Backend"}
 
-@app.post("/api/command")
-def process_command(data: NaturalLanguagePrompt):
-    # TODO pentru echipa: De legat parserul NLP / LLM-ul si SQLAlchemy
-    return {
-        "received_prompt": data.prompt,
-        "reply": f"[Schelet functional] Am primit comanda: '{data.prompt}'. Urmeaza procesarea in DB."
-    }
+
+@app.post("/api/command", response_model=CommandResponse)
+def process_command(data: NaturalLanguagePrompt) -> CommandResponse:
+    parsed = parse_message(data.prompt)
+    reply = format_reply(parsed)
+    return CommandResponse(
+        received_prompt=data.prompt,
+        intent=parsed.intent,
+        confidence=parsed.confidence,
+        entities=parsed.entities,
+        source=parsed.source,
+        reply=reply,
+    )
