@@ -1,0 +1,33 @@
+#!/usr/bin/env sh
+set -e
+
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+
+echo "[pre-commit] Running backend tests..."
+(
+  cd "$REPO_ROOT/backend"
+  if command -v uv >/dev/null 2>&1; then
+    uv run --extra dev pytest
+  elif [ -x ".venv/Scripts/pytest.exe" ]; then
+    .venv/Scripts/pytest.exe
+  elif [ -x ".venv/bin/pytest" ]; then
+    .venv/bin/pytest
+  elif command -v pytest >/dev/null 2>&1; then
+    pytest
+  else
+    echo "[pre-commit] Error: neither uv nor pytest was found." >&2
+    exit 1
+  fi
+)
+
+echo "[pre-commit] Running frontend typecheck & build..."
+(
+  cd "$REPO_ROOT/frontend"
+  if [ ! -d "node_modules" ]; then
+    echo "[pre-commit] Installing frontend dependencies..."
+    npm ci
+  fi
+  npm run build
+)
+
+echo "[pre-commit] All checks passed."
