@@ -1,12 +1,13 @@
 from typing import Literal
 from pydantic import BaseModel, Field
 
-IntentType = Literal["comanda", "interogare_stoc", "salut", "necunoscut"]
+IntentType = Literal["order", "stock_query", "greeting", "unknown"]
 ParserSource = Literal["openrouter", "fallback"]
 
 
 class NaturalLanguagePrompt(BaseModel):
     prompt: str
+    locale: str = Field(default="ro", description="Language locale ('ro' or 'en')")
 
 
 class ExtractedEntities(BaseModel):

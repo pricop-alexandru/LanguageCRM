@@ -1,0 +1,9 @@
+{
+  "greeting": "Salut! Cu ce te pot ajuta astăzi? Poți întreba de stoc sau plasa o comandă.",
+  "order_missing_product": "Am înțeles intenția de comandă. Te rog să specifici produsul și cantitatea dorită.",
+  "order_summary": "Am înțeles intenția de comandă: {qty}{product}{client}.",
+  "order_client_prefix": " pentru {client}",
+  "stock_query_missing_product": "Am înțeles că întrebi despre stoc. Te rog să specifici produsul.",
+  "stock_query_summary": "Verific stocul pentru produsul: {product}.",
+  "unknown": "Nu am putut determina intenția exactă. Te rog să specifici clar produsul și cantitatea dorită sau întrebarea despre stoc."
+}
