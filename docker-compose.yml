@@ -7,6 +7,8 @@ services:
       - ./backend:/app
     environment:
       - PYTHONUNBUFFERED=1
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY:-}
+      - OPENROUTER_DECIDER_MODEL=${OPENROUTER_DECIDER_MODEL:-perplexity/pplx-decider-v1.3:free}
 
   frontend:
     build: ./frontend
