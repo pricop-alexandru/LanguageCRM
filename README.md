@@ -31,7 +31,7 @@ An autonomous natural-language CRM platform centered around a conversational cha
 
 ## Quick Start (Docker Compose)
 
-Make sure [Docker](https://www.docker.com/) is running. Optionally, copy `.env.example` to `.env` and set `OPENROUTER_API_KEY` (and `OPENROUTER_DECIDER_MODEL`, defaulting to `perplexity/pplx-decider-v1.3:free`) to enable OpenRouter-based intent parsing (otherwise a local Romanian fallback parser is used). Then from the repository root:
+Make sure [Docker](https://www.docker.com/) is running. Optionally, copy `.env.example` to `.env` and set `OPENROUTER_API_KEY` (and `OPENROUTER_DECIDER_MODEL`, defaulting to `perplexity/pplx-decider-flash-v1.3:free`) to enable OpenRouter-based intent parsing (otherwise a local Romanian fallback parser is used). Then from the repository root:
 
 ```bash
 docker compose up --build

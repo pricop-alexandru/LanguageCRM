@@ -123,7 +123,7 @@ def test_ambiguous_text_returns_necunoscut_and_does_not_modify_db() -> None:
 
 def test_openrouter_decider_integration_mocked(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("OPENROUTER_API_KEY", "test-openrouter-key")
-    monkeypatch.setenv("OPENROUTER_DECIDER_MODEL", "perplexity/pplx-decider-v1.3:free")
+    monkeypatch.setenv("OPENROUTER_DECIDER_MODEL", "perplexity/pplx-decider-flash-v1.3:free")
 
     mock_api_response: dict[str, Any] = {
         "answers": {

@@ -6,7 +6,7 @@ Guidance for coding agents working in the **LanguageCRM** repository.
 
 - `backend/` — Python 3.12 FastAPI + SQLAlchemy + SQLite backend (`uv` / `pyproject.toml`)
   - `backend/app/` — Application package (`main.py`, `database.py`, `schemas.py`)
-  - `backend/app/nlp/` — Message parsing & intent detection (OpenRouter `perplexity/pplx-decider-v1.3:free` client, Romanian fallback parser, and `ro_locale.py` language constants)
+  - `backend/app/nlp/` — Message parsing & intent detection (OpenRouter `perplexity/pplx-decider-flash-v1.3:free` client, Romanian fallback parser, and `ro_locale.py` language constants)
   - `backend/tests/` — `pytest` test suite (`test_health.py`, `test_parser.py`)
 - `frontend/` — TypeScript + Vite frontend (`package.json`, Node 20)
   - Uses `import.meta.env.VITE_API_URL` (defaults to `http://localhost:8000`)

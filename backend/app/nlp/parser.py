@@ -15,7 +15,7 @@ from app.schemas import ExtractedEntities, IntentType, ParsedMessage
 logger = logging.getLogger(__name__)
 
 OPENROUTER_DECISIONS_URL = "https://openrouter.ai/api/alpha/decisions"
-DEFAULT_DECIDER_MODEL = "perplexity/pplx-decider-v1.3:free"
+DEFAULT_DECIDER_MODEL = "perplexity/pplx-decider-flash-v1.3:free"
 HTTP_TIMEOUT_SECONDS = 3.0
 MIN_CONFIDENCE_THRESHOLD = 0.55
 AMBIGUITY_PROB_THRESHOLD = 0.85
