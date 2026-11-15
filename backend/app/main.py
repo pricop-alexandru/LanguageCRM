@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from database import init_db
+from app.database import init_db
 
 app = FastAPI(title="LanguageCRM API")
 

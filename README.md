@@ -49,7 +49,7 @@ Requires Python `>=3.12` and [`uv`](https://docs.astral.sh/uv/) (or `pip`):
 ```bash
 cd backend
 uv pip install -r pyproject.toml
-uvicorn main:app --reload --port 8000
+uvicorn app.main:app --reload --port 8000
 ```
 
 ### Frontend

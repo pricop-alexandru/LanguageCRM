@@ -20,7 +20,7 @@ Guidance for coding agents working in the **LanguageCRM** repository.
   - Frontend: `http://localhost:5173`
   - Backend API: `http://localhost:8000` (`/health`, `/docs`)
 - **Frontend build/typecheck:** `cd frontend && npm run build` (`tsc && vite build`)
-- **Backend local run:** `cd backend && uvicorn main:app --reload --port 8000` (Python `>=3.12`, dependencies in `backend/pyproject.toml`)
+- **Backend local run:** `cd backend && uvicorn app.main:app --reload --port 8000` (Python `>=3.12`, dependencies in `backend/pyproject.toml`)
 
 ## Security & Git Hygiene
 
