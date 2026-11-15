@@ -62,6 +62,14 @@ npm install
 npm run dev
 ```
 
+### Pre-commit Hook
+
+Enable the shared Git pre-commit hook (runs backend `pytest` and frontend `npm run build` before each commit):
+
+```bash
+git config core.hooksPath .githooks
+```
+
 ## Documentation
 
 - [Requirements Document (RO)](docs/requirements_document.md)
