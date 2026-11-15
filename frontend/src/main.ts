@@ -17,12 +17,21 @@ function appendMessage(text: string, className: string): HTMLParagraphElement {
   return message;
 }
 
+let isSending = false;
+
+function updateSendButtonState(): void {
+  button.disabled = isSending || input.value.trim().length === 0;
+}
+
+input.addEventListener("input", updateSendButtonState);
+
 button.addEventListener("click", async () => {
   const promptText = input.value.trim();
   if (!promptText) return;
 
   input.value = "";
-  button.disabled = true;
+  isSending = true;
+  updateSendButtonState();
 
   appendMessage(promptText, "user-message");
   const loadingMessage = appendMessage("...", "loading-message");
@@ -45,6 +54,7 @@ button.addEventListener("click", async () => {
     loadingMessage.textContent = "Network error: could not reach the server. Please try again.";
     loadingMessage.className = "error-message";
   } finally {
-    button.disabled = false;
+    isSending = false;
+    updateSendButtonState();
   }
 });
