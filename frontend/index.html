@@ -20,6 +20,28 @@
       .padding{
         padding:20px;
       }
+      #chatLog {
+        max-width: 1000px;
+        margin: 0 auto;
+        font-family: Arial, Helvetica, sans-serif;
+        color: white;
+        text-align: left;
+      }
+      #chatLog p {
+        margin: 4px 0;
+      }
+      .user-message {
+        color: #8ab4f8;
+      }
+      .bot-message {
+        color: white;
+      }
+      .loading-message {
+        color: #999999;
+      }
+      .error-message {
+        color: #f28b82;
+      }
     </style>
   </head>
   <body>
@@ -27,8 +49,8 @@
     <center>
       <input id="promptInput" type="text" placeholder="Ex: Add client John..." style="width: 1000px; padding:20px;" />
       <button id="sendBtn" class="padding">Send</button>
-      <p id="responseArea" class="title">The response will appear here...</p>
     </center>
+    <div id="chatLog"></div>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
