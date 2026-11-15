@@ -5,7 +5,7 @@ from database import init_db
 
 app = FastAPI(title="LanguageCRM API")
 
-# Permite frontend-ului TypeScript sa comunice cu backend-ul
+# Allow the TypeScript frontend to communicate with the backend
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],

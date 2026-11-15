@@ -10,7 +10,7 @@ ENV/
 .uv/
 
 # ==========================================
-# 2. TESTARE & CODE COVERAGE (pytest)
+# 2. TESTING & CODE COVERAGE (pytest)
 # ==========================================
 .pytest_cache/
 .coverage
@@ -18,9 +18,9 @@ htmlcov/
 coverage.xml
 
 # ==========================================
-# 3. BAZA DE DATE SQLITE (Locala)
+# 3. SQLITE DATABASE (Local)
 # ==========================================
-# Ca sa nu ne suprascriem baza de date locala, ignoram fisierele sqlite
+# Avoid overwriting local database files
 *.db
 *.sqlite
 *.sqlite3
@@ -37,15 +37,15 @@ dist-ssr/
 npm-debug.log*
 
 # ==========================================
-# 5. VARIABILE DE MEDIU & CHEI API (AI/LLM)
+# 5. ENVIRONMENT VARIABLES & API KEYS (AI/LLM)
 # ==========================================
-# De pus cheile secrete aici
+# Put secret keys here
 .env
 .env.*
 !.env.example
 
 # ==========================================
-# 6. IDE & SISTEM DE OPERARE
+# 6. IDE & OS
 # ==========================================
 .vscode/
 .idea/
