@@ -9,12 +9,18 @@ const input = document.getElementById("promptInput") as HTMLInputElement;
 const button = document.getElementById("sendBtn") as HTMLButtonElement;
 const chatLog = document.getElementById("chatLog") as HTMLDivElement;
 
-function appendMessage(text: string, className: string): HTMLParagraphElement {
-  const message = document.createElement("p");
-  message.textContent = text;
-  message.className = className;
-  chatLog.appendChild(message);
-  return message;
+function appendMessage(text: string, align: "user" | "bot", bubbleClass: string): HTMLDivElement {
+  const row = document.createElement("div");
+  row.className = `message-row ${align}`;
+
+  const bubble = document.createElement("div");
+  bubble.className = `bubble ${bubbleClass}`;
+  bubble.textContent = text;
+
+  row.appendChild(bubble);
+  chatLog.appendChild(row);
+  chatLog.scrollTop = chatLog.scrollHeight;
+  return bubble;
 }
 
 let isSending = false;
@@ -33,8 +39,8 @@ button.addEventListener("click", async () => {
   isSending = true;
   updateSendButtonState();
 
-  appendMessage(promptText, "user-message");
-  const loadingMessage = appendMessage("...", "loading-message");
+  appendMessage(promptText, "user", "bubble-user");
+  const loadingMessage = appendMessage("...", "bot", "bubble-loading");
 
   try {
     const response = await fetch(`${API_BASE_URL}/api/command`, {
@@ -49,10 +55,10 @@ button.addEventListener("click", async () => {
 
     const data: CommandResponse = await response.json();
     loadingMessage.textContent = data.reply;
-    loadingMessage.className = "bot-message";
+    loadingMessage.className = "bubble bubble-bot";
   } catch (error) {
     loadingMessage.textContent = "Network error: could not reach the server. Please try again.";
-    loadingMessage.className = "error-message";
+    loadingMessage.className = "bubble bubble-error";
   } finally {
     isSending = false;
     updateSendButtonState();
