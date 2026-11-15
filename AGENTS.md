@@ -11,6 +11,7 @@ Guidance for coding agents working in the **LanguageCRM** repository.
   - Uses `import.meta.env.VITE_API_URL` (defaults to `http://localhost:8000`)
 - `scripts/` — Cross-platform developer helpers (`setup.py`)
 - `.githooks/` — Shared Git hooks (`pre-commit` runs backend `pytest` + frontend `npm run build`)
+- `.github/workflows/` — GitHub Actions CI (`ci.yml` runs backend `pytest` and frontend `npm run build` on PRs and pushes to `main`)
 - `docs/` — Course & planning documentation (requirements, agile planning, Planning Poker screenshots)
 - `docker-compose.yml` — Multi-service local development setup
 
