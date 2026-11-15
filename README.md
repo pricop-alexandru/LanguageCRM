@@ -12,10 +12,15 @@ An autonomous natural-language CRM platform centered around a conversational cha
 
 ```text
 .
-├── backend/              # FastAPI API & SQLAlchemy/SQLite database layer
+├── backend/
+│   ├── app/              # FastAPI API & SQLAlchemy/SQLite database layer
+│   └── tests/            # pytest test suite
 ├── frontend/             # Vite + TypeScript web interface
+├── scripts/              # Cross-platform setup & test runner (setup.py)
+├── .githooks/            # Shared Git hooks (pre-commit)
 ├── docs/                 # Requirements, agile planning, and setup notes
 ├── docker-compose.yml    # Multi-service development setup
+├── AGENTS.md             # Guidance for AI coding agents
 ├── .gitignore
 └── README.md
 ```
@@ -41,6 +46,20 @@ docker compose down
 ```
 
 ## Local Development (Without Docker)
+
+### One-Time Setup (Windows / macOS / Linux)
+
+Requires Python `>=3.12`, [`uv`](https://docs.astral.sh/uv/), and Node.js `>=20`:
+
+```bash
+python scripts/setup.py
+```
+
+This enables the shared `.githooks` pre-commit hook, installs backend and frontend dependencies, and runs all checks. You can re-run checks anytime with:
+
+```bash
+python scripts/setup.py test
+```
 
 ### Backend
 

@@ -5,7 +5,12 @@ Guidance for coding agents working in the **LanguageCRM** repository.
 ## Repository Structure
 
 - `backend/` — Python 3.12 FastAPI + SQLAlchemy + SQLite backend (`uv` / `pyproject.toml`)
+  - `backend/app/` — Application package (`main.py`, `database.py`)
+  - `backend/tests/` — `pytest` test suite (`test_health.py`)
 - `frontend/` — TypeScript + Vite frontend (`package.json`, Node 20)
+  - Uses `import.meta.env.VITE_API_URL` (defaults to `http://localhost:8000`)
+- `scripts/` — Cross-platform developer helpers (`setup.py`)
+- `.githooks/` — Shared Git hooks (`pre-commit` runs backend `pytest` + frontend `npm run build`)
 - `docs/` — Course & planning documentation (requirements, agile planning, Planning Poker screenshots)
 - `docker-compose.yml` — Multi-service local development setup
 
@@ -16,14 +21,18 @@ Guidance for coding agents working in the **LanguageCRM** repository.
 
 ## Running & Verifying Changes
 
-- **Full stack (Docker):** `docker compose up --build`
+- **One-time local setup (Windows/macOS/Linux):** `python scripts/setup.py` (enables `.githooks`, installs backend/frontend deps, and runs checks)
+- **Run all checks:** `python scripts/setup.py test`
+- **Full stack (Docker):** `docker compose up --build` (or `python scripts/setup.py up`)
   - Frontend: `http://localhost:5173`
   - Backend API: `http://localhost:8000` (`/health`, `/docs`)
+- **Backend tests:** `cd backend && uv run --extra dev pytest`
 - **Frontend build/typecheck:** `cd frontend && npm run build` (`tsc && vite build`)
-- **Backend local run:** `cd backend && uvicorn app.main:app --reload --port 8000` (Python `>=3.12`, dependencies in `backend/pyproject.toml`)
+- **Backend local run:** `cd backend && uv run uvicorn app.main:app --reload --port 8000` (Python `>=3.12`, dependencies in `backend/pyproject.toml`)
 
 ## Security & Git Hygiene
 
 - Never commit secrets, `.env` files, API keys, or local SQLite database files (`*.db`, `*.sqlite`, `*.sqlite3`)—these are ignored in `.gitignore`.
 - Do not commit editor-specific folders like `.vscode/` or `.idea/`.
 - Use feature branches and Pull Requests rather than committing directly to `main`.
+- Keep `AGENTS.md` and `README.md` up to date whenever project structure, setup commands, or conventions change.
