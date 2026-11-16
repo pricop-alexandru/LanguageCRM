@@ -1,5 +1,8 @@
-from typing import Literal
-from pydantic import BaseModel, Field
+from typing import Literal, Self
+
+from pydantic import BaseModel, Field, field_validator, model_validator
+
+from app.identity import normalize_phone
 
 IntentType = Literal["order", "stock_query", "greeting", "unknown"]
 ParserSource = Literal["openrouter", "fallback"]
@@ -14,6 +17,40 @@ class NaturalLanguagePrompt(BaseModel):
         max_length=64,
         description="Conversation identifier returned by a previous response, used to continue a clarification",
     )
+
+
+class ClientResolutionRequest(BaseModel):
+    name: str | None = Field(default=None, min_length=1, max_length=200)
+    phone: str | None = Field(default=None, min_length=1, max_length=32)
+
+    @field_validator("name")
+    @classmethod
+    def strip_name(cls, value: str | None) -> str | None:
+        if value is None:
+            return None
+        cleaned = value.strip()
+        if not cleaned:
+            raise ValueError("Name must not be blank")
+        return cleaned
+
+    @field_validator("phone")
+    @classmethod
+    def canonicalize_phone(cls, value: str | None) -> str | None:
+        return normalize_phone(value)
+
+    @model_validator(mode="after")
+    def require_identifier(self) -> Self:
+        if self.name is None and self.phone is None:
+            raise ValueError("Provide a client name, phone number, or both")
+        return self
+
+
+class ClientResolutionResponse(BaseModel):
+    id: int
+    name: str | None
+    email: str | None
+    phone: str | None
+    created: bool
 
 
 class ExtractedEntities(BaseModel):
