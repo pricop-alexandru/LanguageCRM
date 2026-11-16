@@ -20,6 +20,16 @@ Incoming English and Romanian messages (with or without diacritics) are parsed i
 - **Supported Intents:** `order`, `stock_query`, `greeting`, `unknown`.
 - **Extracted Entities:** `product` (`str | null`), `quantity` (`int | null`), `client` (`str | null`).
 
+## Client Resolution (US-06)
+
+`POST /api/clients/resolve` reuses a stored client by normalized name or phone number and creates one when no match exists and a name is supplied. Romanian local numbers such as `07xxxxxxxx` are stored in canonical international form (`+407xxxxxxxx`). A phone-only lookup that finds no client returns `404`; conflicting name and phone matches return `409`.
+
+```json
+{ "name": "Ion Popescu", "phone": "07 22-123-456" }
+```
+
+The response contains the client fields and a `created` flag. `name` and `phone` may be sent individually for lookup; a name is required when a new client must be created.
+
 ### Example Request & Response
 
 ```json
