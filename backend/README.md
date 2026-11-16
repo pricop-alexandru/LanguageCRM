@@ -41,6 +41,29 @@ Incoming English and Romanian messages (with or without diacritics) are parsed i
 }
 ```
 
+## Clarification Dialogue (US-04)
+
+When a request is understood but incomplete, `app/dialogue.py` asks for exactly the missing details instead of guessing:
+
+- **Required slots:** `order` needs `product`, `quantity` and `client`; `stock_query` needs `product`. The client is asked for last (`"Pe ce nume plasez comanda…?"`) and is filled automatically if it was already named in the conversation. When it is the only thing asked for, replies such as `"Sunt Ion Popescu"`, `"ion popescu"` or `"I'm John Doe"` are accepted.
+- **Conversation context:** every response carries a `conversation_id`. Send it back on the next request so short answers such as `"5"`, `"cinci"` or `"3 laptopuri"` complete the pending request.
+- **State storage:** pending requests live only in memory (`app/conversation.py`, 15-minute TTL). They are never written to the database, so no partial orders are created. State is lost on backend restart.
+- **Client memory:** a client named in any message of the conversation (e.g. `"Sunt Ion Popescu"`) is remembered and applied to later requests in the same conversation; a newly named client replaces it. Cancelling a request keeps the client.
+- **Cancel / give up:** `"anulează"` / `"cancel"` drops the pending request, and so do 3 consecutive answers that fill nothing.
+- **Response fields:** `needs_clarification` (`bool`), `missing_fields` (`["product" | "quantity" | "client"]`), `order_ready` (`true` when an order is complete; order placement itself is US-11).
+
+```json
+// POST /api/command
+{ "prompt": "Vreau să comand laptopuri pentru Ion Popescu" }
+// → { "intent": "order", "needs_clarification": true, "missing_fields": ["quantity"],
+//     "conversation_id": "3f9c…", "reply": "Câte bucăți de laptopuri dorești să comanzi?", ... }
+
+// POST /api/command
+{ "prompt": "5", "conversation_id": "3f9c…" }
+// → { "intent": "order", "order_ready": true,
+//     "entities": { "product": "laptopuri", "quantity": 5, "client": "Ion Popescu" }, ... }
+```
+
 ## Testing
 
 ```bash

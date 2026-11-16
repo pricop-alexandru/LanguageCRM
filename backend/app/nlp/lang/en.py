@@ -38,6 +38,14 @@ EN_PACK = LanguagePack(
             "order",
             "stock",
             "in stock",
+            "units",
+            "unit",
+            "pieces",
+            "piece",
+            "pcs",
+            "hmm",
+            "i don't know",
+            "dont know",
         }
     ),
     greeting_pattern=re.compile(
@@ -89,6 +97,29 @@ EN_PACK = LanguagePack(
     leading_numeral_pattern=re.compile(rf"^(\d+|{_NUM_WORDS})\s+", re.IGNORECASE),
     order_product_pattern=re.compile(
         r"\b(?:order|buy|purchase)\s+([a-z0-9][a-z0-9\s\-]*)",
+        re.IGNORECASE,
+    ),
+    cancel_pattern=re.compile(
+        r"\b(?:cancel|never\s*mind|forget\s+it|stop)\b",
+        re.IGNORECASE,
+    ),
+    qty_only_pattern=re.compile(
+        rf"\b(?:order(?:\s+of)?|buy|purchase|want)\s+(\d+|{_NUM_WORDS})(?:\s+(?:units?|pieces?|pcs))?$",
+        re.IGNORECASE,
+    ),
+    answer_prefix_pattern=re.compile(
+        r"^(?:(?:yes|ok|okay|sure)[,\s]+)?(?:(?:i\s+want|i'?d\s+like|i\s+would\s+like|i\s+need|please|let'?s\s+say|make\s+it)\s+)*",
+        re.IGNORECASE,
+    ),
+    unit_words_pattern=re.compile(r"\b(?:units?|pieces?|pcs)\b(?:\s+of\b)?", re.IGNORECASE),
+    client_answer_prefix_pattern=re.compile(
+        r"^(?:(?:yes|ok|okay|sure)\s+)?(?:(?:i\s+am|i'?m|my\s+name\s+is|it'?s|it\s+is|"
+        r"for(?:\s+client|\s+customer)?|client|customer)\s+)?",
+        re.IGNORECASE,
+    ),
+    non_name_pattern=re.compile(
+        r"\b(?:thanks?|thank|you|hello|hi|no|yes|not|sure|know|nothing|nobody|want|order\w*|"
+        r"stock|units?|cancel|please)\b",
         re.IGNORECASE,
     ),
 )

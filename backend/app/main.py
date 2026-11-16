@@ -1,8 +1,9 @@
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.conversation import ConversationStore, get_conversation_store
 from app.database import init_db
-from app.nlp.parser import format_reply, parse_message
+from app.dialogue import handle_turn
 from app.schemas import CommandResponse, NaturalLanguagePrompt
 
 app = FastAPI(title="LanguageCRM API")
@@ -27,14 +28,8 @@ def health_check() -> dict[str, str]:
 
 
 @app.post("/api/command", response_model=CommandResponse)
-def process_command(data: NaturalLanguagePrompt) -> CommandResponse:
-    parsed = parse_message(data.prompt)
-    reply = format_reply(parsed, locale=data.locale)
-    return CommandResponse(
-        received_prompt=data.prompt,
-        intent=parsed.intent,
-        confidence=parsed.confidence,
-        entities=parsed.entities,
-        source=parsed.source,
-        reply=reply,
-    )
+def process_command(
+    data: NaturalLanguagePrompt,
+    store: ConversationStore = Depends(get_conversation_store),
+) -> CommandResponse:
+    return handle_turn(data.prompt, data.locale, data.conversation_id, store)

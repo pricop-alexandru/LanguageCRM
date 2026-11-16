@@ -5,10 +5,10 @@ Guidance for coding agents working in the **LanguageCRM** repository.
 ## Repository Structure
 
 - `backend/` — Python 3.12 FastAPI + SQLAlchemy + SQLite backend (`uv` / `pyproject.toml`)
-  - `backend/app/` — Application package (`main.py`, `database.py`, `schemas.py`)
+  - `backend/app/` — Application package (`main.py`, `database.py`, `schemas.py`, `conversation.py` in-memory clarification state, `dialogue.py` multi-turn clarification flow)
   - `backend/app/locales/` — User-facing i18n JSON message catalogs (`ro.json`, `en.json`)
   - `backend/app/nlp/` — Message parsing & intent detection (OpenRouter `perplexity/pplx-decider-flash-v1.3:free` client, fallback parser, and `lang/` NLP rule packs for `ro.py` and `en.py`)
-  - `backend/tests/` — `pytest` test suite (`test_health.py`, `test_parser.py`)
+  - `backend/tests/` — `pytest` test suite (`test_health.py`, `test_parser.py`, `test_clarification.py`)
 - `frontend/` — TypeScript + Vite frontend (`package.json`, Node 20)
   - Uses `import.meta.env.VITE_API_URL` (defaults to `http://localhost:8000`)
 - `scripts/` — Cross-platform developer helpers (`setup.py`)
