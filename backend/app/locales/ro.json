@@ -5,5 +5,13 @@
   "order_client_prefix": " pentru {client}",
   "stock_query_missing_product": "Am înțeles că întrebi despre stoc. Te rog să specifici produsul.",
   "stock_query_summary": "Verific stocul pentru produsul: {product}.",
-  "unknown": "Nu am putut determina intenția exactă. Te rog să specifici clar produsul și cantitatea dorită sau întrebarea despre stoc."
+  "unknown": "Nu am putut determina intenția exactă. Te rog să specifici clar produsul și cantitatea dorită sau întrebarea despre stoc.",
+  "clarify_order_product": "Am înțeles că vrei să comanzi {quantity} bucăți. Ce produs dorești?",
+  "clarify_order_quantity": "Câte bucăți de {product} dorești să comanzi?",
+  "clarify_order_product_and_quantity": "Am înțeles că vrei să plasezi o comandă. Ce produs dorești și în ce cantitate?",
+  "clarify_stock_product": "Pentru ce produs dorești să verific stocul?",
+  "clarification_cancelled": "Am anulat cererea. Cu ce te mai pot ajuta?",
+  "clarification_abandoned": "Nu am reușit să înțeleg detaliile lipsă, așa că am renunțat la această cerere. Te rog să o reformulezi, de exemplu: „Vreau să comand 3 laptopuri”.",
+  "client_noted": "Mulțumesc, {client}! Cu ce te pot ajuta? Poți întreba de stoc sau plasa o comandă.",
+  "clarify_order_client": "Pe ce nume plasez comanda de {quantity}x {product}? Te rog să-mi spui numele complet."
 }

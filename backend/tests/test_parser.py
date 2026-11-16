@@ -38,7 +38,7 @@ def clear_openrouter_env(monkeypatch: pytest.MonkeyPatch) -> None:
         (
             "Vreau să comand ceva acum",
             "Vreau sa comand ceva acum",
-            "unknown",
+            "order",
         ),
     ],
 )
@@ -86,7 +86,7 @@ def test_romanian_intents_with_and_without_diacritics(
         ),
         (
             "I want to order something",
-            "unknown",
+            "order",
             {"product": None, "quantity": None, "client": None},
         ),
     ],
@@ -142,19 +142,33 @@ def test_ambiguous_text_returns_unknown_and_does_not_modify_db() -> None:
         clients_before = db.query(DBClient).count()
         orders_before = db.query(DBOrder).count()
 
-    ambiguous_prompts = [
+    # Truly vague messages: no intent can be determined.
+    vague_prompts = [
         "",
         "   ",
         "Vreau și eu ceva",
-        "Mai aveți în stoc?",
         "Cât costă transportul până la Cluj?",
-        "Comandă pentru Ion Popescu",
-        "Do you have anything in stock?",
     ]
-    for prompt in ambiguous_prompts:
+    for prompt in vague_prompts:
         response = client.post("/api/command", json={"prompt": prompt})
         assert response.status_code == 200
         assert response.json()["intent"] == "unknown"
+        assert response.json()["needs_clarification"] is False
+
+    # Clear intent but missing details: the chatbot asks for clarification (US-04).
+    incomplete_prompts = [
+        ("Mai aveți în stoc?", "stock_query"),
+        ("Comandă pentru Ion Popescu", "order"),
+        ("Do you have anything in stock?", "stock_query"),
+    ]
+    for prompt, expected_intent in incomplete_prompts:
+        response = client.post("/api/command", json={"prompt": prompt})
+        assert response.status_code == 200
+        payload = response.json()
+        assert payload["intent"] == expected_intent
+        assert payload["needs_clarification"] is True
+        assert payload["entities"]["product"] is None
+        assert payload["order_ready"] is False
 
     with SessionLocal() as db:
         clients_after = db.query(DBClient).count()

@@ -1,6 +1,10 @@
 interface CommandResponse {
   received_prompt: string;
   reply: string;
+  conversation_id: string | null;
+  needs_clarification: boolean;
+  missing_fields: Array<"product" | "quantity" | "client">;
+  order_ready: boolean;
 }
 
 const API_BASE_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
@@ -28,6 +32,8 @@ function appendMessage(text: string, align: "user" | "bot", bubbleClass: string)
 }
 
 let isSending = false;
+// Keeps the backend conversation context so clarification answers (e.g. "5") are understood.
+let conversationId: string | null = null;
 
 function updateSendButtonState(): void {
   button.disabled = isSending || input.value.trim().length === 0;
@@ -50,7 +56,7 @@ button.addEventListener("click", async () => {
     const response = await fetch(`${API_BASE_URL}/api/command`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ prompt: promptText }),
+      body: JSON.stringify({ prompt: promptText, conversation_id: conversationId }),
     });
 
     if (!response.ok) {
@@ -58,6 +64,7 @@ button.addEventListener("click", async () => {
     }
 
     const data: CommandResponse = await response.json();
+    conversationId = data.conversation_id;
     loadingMessage.textContent = data.reply;
     loadingMessage.className = "bubble bubble-bot";
     scrollToBottom();
@@ -68,5 +75,6 @@ button.addEventListener("click", async () => {
   } finally {
     isSending = false;
     updateSendButtonState();
+    input.focus();
   }
 });

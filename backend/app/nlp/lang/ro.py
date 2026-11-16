@@ -40,6 +40,13 @@ RO_PACK = LanguagePack(
             "stoc",
             "in stoc",
             "pe stoc",
+            "bucati",
+            "bucata",
+            "buc",
+            "piese",
+            "hmm",
+            "nu stiu",
+            "habar n-am",
         }
     ),
     greeting_pattern=re.compile(
@@ -95,6 +102,29 @@ RO_PACK = LanguagePack(
     leading_numeral_pattern=re.compile(rf"^(\d+|{_NUM_WORDS})\s+", re.IGNORECASE),
     order_product_pattern=re.compile(
         r"\b(?:comand(?:a\s+de)?|cumpar)\s+([a-z0-9][a-z0-9\s\-]*)",
+        re.IGNORECASE,
+    ),
+    cancel_pattern=re.compile(
+        r"\b(?:anuleaza|anulez|renunt(?:a|am)?|nu\s+mai\s+vreau|lasa\s+balta|stop)\b",
+        re.IGNORECASE,
+    ),
+    qty_only_pattern=re.compile(
+        rf"\b(?:comand(?:a)?(?:\s+de)?|cumpar(?:a)?|vreau|dori|iau)\s+(\d+|{_NUM_WORDS})(?:\s+(?:bucati|bucata|buc|piese))?$",
+        re.IGNORECASE,
+    ),
+    answer_prefix_pattern=re.compile(
+        r"^(?:(?:da|ok|bine)[,\s]+)?(?:(?:as\s+vrea|as\s+dori|vreau|doresc|iau|te\s+rog|va\s+rog)\s+)*",
+        re.IGNORECASE,
+    ),
+    unit_words_pattern=re.compile(r"\b(?:bucati|bucata|buc|piese)\b(?:\s+de\b)?", re.IGNORECASE),
+    client_answer_prefix_pattern=re.compile(
+        r"^(?:(?:da|ok|bine)\s+)?(?:(?:sunt|ma\s+numesc|numele\s+(?:meu\s+)?(?:este|e)|"
+        r"pentru(?:\s+clientul)?|pe\s+numele(?:\s+(?:lui|de))?|clientul|client|e|este)\s+)?",
+        re.IGNORECASE,
+    ),
+    non_name_pattern=re.compile(
+        r"\b(?:multumesc|mersi|frumos|salut|buna|nu|da|stiu|nimic|nimeni|vreau|comand\w*|"
+        r"stoc|bucati|anuleaza|te|rog)\b",
         re.IGNORECASE,
     ),
 )

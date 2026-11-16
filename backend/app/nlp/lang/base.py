@@ -21,3 +21,12 @@ class LanguagePack:
     stock_patterns: tuple[re.Pattern[str], ...]
     leading_numeral_pattern: re.Pattern[str]
     order_product_pattern: re.Pattern[str]
+    # Clarification dialogue rules (US-04)
+    cancel_pattern: re.Pattern[str]
+    qty_only_pattern: re.Pattern[str]
+    answer_prefix_pattern: re.Pattern[str]
+    unit_words_pattern: re.Pattern[str]
+    # Answers to "who is the order for?": optional lead-in before the name, and
+    # words that show the reply is not a name (e.g. "multumesc frumos").
+    client_answer_prefix_pattern: re.Pattern[str]
+    non_name_pattern: re.Pattern[str]

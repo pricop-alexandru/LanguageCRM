@@ -5,5 +5,13 @@
   "order_client_prefix": " for {client}",
   "stock_query_missing_product": "I understood you are asking about stock. Please specify the product.",
   "stock_query_summary": "Checking stock for product: {product}.",
-  "unknown": "I could not determine the exact intent. Please clearly specify the product and quantity or your stock question."
+  "unknown": "I could not determine the exact intent. Please clearly specify the product and quantity or your stock question.",
+  "clarify_order_product": "I understood you want to order {quantity} units. Which product would you like?",
+  "clarify_order_quantity": "How many {product} would you like to order?",
+  "clarify_order_product_and_quantity": "I understood you want to place an order. Which product would you like, and how many?",
+  "clarify_stock_product": "Which product would you like me to check the stock for?",
+  "clarification_cancelled": "I cancelled the request. How else can I help you?",
+  "clarification_abandoned": "I couldn't understand the missing details, so I dropped this request. Please rephrase it, for example: \"I want to order 3 laptops\".",
+  "client_noted": "Thank you, {client}! How can I help you? You can ask about stock or place an order.",
+  "clarify_order_client": "Who should I place the order for ({quantity}x {product})? Please tell me the full name."
 }
