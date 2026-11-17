@@ -69,7 +69,9 @@ RO_PACK = LanguagePack(
     ),
     client_patterns=(
         re.compile(
-            r"\b(?:[Pp]entru(?:\s+clientul)?|[Pp]e\s+numele|[Cc]lient(?:ul)?)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+){0,2})"
+            r"\b(?:[Pp]entru(?:\s+clientul)?|[Pp]e\s+numele|"
+            r"[Cc]lient(?:ul|a)?(?:\s+nou(?:a)?)?(?:\s+(?:numit(?:a)?|cu\s+numele))?|"
+            r"[Nn]umit(?:a)?|[Cc]u\s+numele)(?:\s*:\s*|\s+)([A-Z][a-z]+(?:\s+[A-Z][a-z]+){0,2})"
         ),
         re.compile(r"\b(?:[Ss]unt|[Mm]a\s+numesc)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+){0,2})"),
     ),
@@ -125,6 +127,21 @@ RO_PACK = LanguagePack(
     non_name_pattern=re.compile(
         r"\b(?:multumesc|mersi|frumos|salut|buna|nu|da|stiu|nimic|nimeni|vreau|comand\w*|"
         r"stoc|bucati|anuleaza|te|rog)\b",
+        re.IGNORECASE,
+    ),
+    add_client_keywords=re.compile(
+        r"\b(?:adauga|creeaza|inregistreaza|salveaza)\s+(?:un\s+|o\s+)?(?:nou\s+)?client(?:ul|a|e|i)?\b"
+        r"|^client(?:ul|a)?\s+nou(?:a)?\b",
+        re.IGNORECASE,
+    ),
+    new_client_name_pattern=re.compile(
+        r"\bclient(?:ul|a)?(?:\s+nou(?:a)?)?(?:\s+(?:numit(?:a)?|cu\s+numele|pe\s+numele))?"
+        r"\s+([a-z]+(?:-[a-z]+)?(?:\s+[a-z]+(?:-[a-z]+)?){1,2})$",
+        re.IGNORECASE,
+    ),
+    contact_label_pattern=re.compile(
+        r"(?:\b(?:si|cu)\s+)*\b(?:(?:nr|numar(?:ul)?)\s+(?:de\s+)?)?(?:telefon(?:ul)?|tel|mobil(?:ul)?)\b"
+        r"|(?:\b(?:si|cu)\s+)*\b(?:adresa\s+de\s+)?(?:e-?mail(?:ul)?|mail(?:ul)?)\b",
         re.IGNORECASE,
     ),
 )

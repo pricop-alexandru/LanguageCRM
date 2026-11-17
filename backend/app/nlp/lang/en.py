@@ -68,7 +68,8 @@ EN_PACK = LanguagePack(
     ),
     client_patterns=(
         re.compile(
-            r"\b(?:[Ff]or(?:\s+client|\s+customer)?|[Cc]lient|[Cc]ustomer)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+){0,2})"
+            r"\b(?:[Ff]or(?:\s+client|\s+customer)?|(?:[Cc]lient|[Cc]ustomer)(?:\s+(?:named|called))?|"
+            r"[Nn]amed|[Cc]alled)(?:\s*:\s*|\s+)([A-Z][a-z]+(?:\s+[A-Z][a-z]+){0,2})"
         ),
         re.compile(r"\b(?:[Ii]\s+am|[Mm]y\s+name\s+is)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+){0,2})"),
     ),
@@ -120,6 +121,21 @@ EN_PACK = LanguagePack(
     non_name_pattern=re.compile(
         r"\b(?:thanks?|thank|you|hello|hi|no|yes|not|sure|know|nothing|nobody|want|order\w*|"
         r"stock|units?|cancel|please)\b",
+        re.IGNORECASE,
+    ),
+    add_client_keywords=re.compile(
+        r"\b(?:add|create|register|save)\s+(?:a\s+|the\s+)?(?:new\s+)?(?:client|customer)s?\b"
+        r"|^new\s+(?:client|customer)\b",
+        re.IGNORECASE,
+    ),
+    new_client_name_pattern=re.compile(
+        r"\b(?:client|customer)(?:\s+(?:named|called))?"
+        r"\s+([a-z]+(?:-[a-z]+)?(?:\s+[a-z]+(?:-[a-z]+)?){1,2})$",
+        re.IGNORECASE,
+    ),
+    contact_label_pattern=re.compile(
+        r"(?:\b(?:and|with)\s+)*\b(?:(?:phone|mobile|telephone)(?:\s+number)?|tel)\b"
+        r"|(?:\b(?:and|with)\s+)*\b(?:e-?mail(?:\s+address)?|mail)\b",
         re.IGNORECASE,
     ),
 )

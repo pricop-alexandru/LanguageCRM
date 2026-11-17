@@ -1,5 +1,5 @@
 {
-  "greeting": "Salut! Cu ce te pot ajuta astăzi? Poți întreba de stoc sau plasa o comandă.",
+  "greeting": "Salut! Cu ce te pot ajuta astăzi? Poți întreba de stoc, plasa o comandă sau adăuga un client.",
   "order_missing_product": "Am înțeles intenția de comandă. Te rog să specifici produsul și cantitatea dorită.",
   "order_summary": "Am înțeles intenția de comandă: {qty}{product}{client}.",
   "order_client_prefix": " pentru {client}",
@@ -12,6 +12,20 @@
   "clarify_stock_product": "Pentru ce produs dorești să verific stocul?",
   "clarification_cancelled": "Am anulat cererea. Cu ce te mai pot ajuta?",
   "clarification_abandoned": "Nu am reușit să înțeleg detaliile lipsă, așa că am renunțat la această cerere. Te rog să o reformulezi, de exemplu: „Vreau să comand 3 laptopuri”.",
-  "client_noted": "Mulțumesc, {client}! Cu ce te pot ajuta? Poți întreba de stoc sau plasa o comandă.",
-  "clarify_order_client": "Pe ce nume plasez comanda de {quantity}x {product}? Te rog să-mi spui numele complet."
+  "client_noted": "Mulțumesc, {client}! Cu ce te pot ajuta? Poți întreba de stoc, plasa o comandă sau adăuga un client.",
+  "clarify_order_client": "Pe ce nume plasez comanda de {quantity}x {product}? Te rog să-mi spui numele complet.",
+  "add_client_summary": "Am înțeles că vrei să adaugi clientul {client} (telefon {phone}, email {email}).",
+  "clarify_client_details": "Pentru a crea clientul am nevoie de: {fields}.",
+  "clarify_client_name": "Care este numele complet al clientului?",
+  "clarify_client_phone": "Care este numărul de telefon al clientului {client}?",
+  "clarify_client_email": "Care este adresa de email a clientului {client}?",
+  "field_client": "numele complet",
+  "field_phone": "numărul de telefon",
+  "field_email": "adresa de email",
+  "list_and": " și ",
+  "invalid_phone": "Numărul de telefon „{value}” nu pare valid. Te rog să-l trimiți din nou, de exemplu: 0722 123 456.",
+  "invalid_email": "Adresa de email „{value}” nu pare validă. Te rog să o trimiți din nou, de exemplu: nume@exemplu.ro.",
+  "client_created": "Am creat clientul {client} (telefon {phone}, email {email}).",
+  "client_already_exists": "Clientul {client} există deja (telefon {phone}, email {email}). Nu am creat un duplicat.",
+  "client_conflict": "Telefonul sau emailul aparțin deja altui client înregistrat, așa că nu am creat clientul {client}. Te rog să verifici datele și să încerci din nou."
 }

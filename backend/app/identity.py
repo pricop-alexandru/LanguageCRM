@@ -32,3 +32,19 @@ def normalize_phone(phone: str | None) -> str | None:
     if not 8 <= len(digits) <= 15:
         raise ValueError("Phone number must contain 8 to 15 digits")
     return f"+{digits}"
+
+
+_EMAIL_PATTERN = re.compile(
+    r"[a-z0-9](?:[a-z0-9._%+-]*[a-z0-9_%+-])?@[a-z0-9](?:[a-z0-9-]*[a-z0-9])?"
+    r"(?:\.[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)*\.[a-z]{2,}"
+)
+
+
+def normalize_email(email: str | None) -> str | None:
+    """Return a trimmed, lowercased email address, or raise ValueError if it is invalid."""
+    if email is None or not email.strip():
+        return None
+    cleaned = email.strip().lower()
+    if ".." in cleaned or not _EMAIL_PATTERN.fullmatch(cleaned):
+        raise ValueError("Email address is not valid")
+    return cleaned

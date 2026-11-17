@@ -4,10 +4,13 @@ from typing import Any
 import httpx
 
 from app.locales import get_messages
+from app.nlp.contact import mask_contact_details, strip_contact_details
 from app.nlp.fallback import (
+    extract_add_client_entities,
     extract_client_name,
     extract_quantity_and_product,
     fallback_parse_message,
+    is_add_client_request,
 )
 from app.nlp.lang import ALL_AMBIGUOUS_PRODUCT_WORDS
 from app.nlp.normalizer import normalize_text
@@ -21,14 +24,18 @@ HTTP_TIMEOUT_SECONDS = 3.0
 MIN_CONFIDENCE_THRESHOLD = 0.55
 AMBIGUITY_PROB_THRESHOLD = 0.85
 
-VALID_INTENTS: set[str] = {"order", "stock_query", "greeting", "unknown"}
+VALID_INTENTS: set[str] = {"order", "stock_query", "add_client", "greeting", "unknown"}
 
 
 def build_decider_payload(prompt: str, model: str) -> dict[str, Any]:
-    """Build the OpenRouter Decisions API payload for pplx-decider."""
+    """Build the OpenRouter Decisions API payload for pplx-decider.
+
+    Phone numbers and email addresses are masked so that personal contact data is
+    never sent to the external service; the intent does not depend on them.
+    """
     return {
         "model": model,
-        "state": prompt,
+        "state": mask_contact_details(prompt),
         "questions": {
             "intent": {
                 "type": "choice",
@@ -42,18 +49,23 @@ def build_decider_payload(prompt: str, model: str) -> dict[str, Any]:
                     "stock_query": (
                         "The user asks about stock availability, how many units are available, or if a product is in stock."
                     ),
+                    "add_client": (
+                        "The operator wants to add, create or register a new client/customer, "
+                        "possibly with contact details such as name, phone number or email."
+                    ),
                     "greeting": (
-                        "The message is solely a greeting without an order or stock inquiry."
+                        "The message is solely a greeting without an order, stock inquiry or new client."
                     ),
                     "unknown": (
-                        "The message is ambiguous, off-topic, unclear, or does not fit order, stock_query, or greeting."
+                        "The message is ambiguous, off-topic, unclear, or does not fit order, stock_query, "
+                        "add_client, or greeting."
                     ),
                 },
             },
             "is_ambiguous": {
                 "type": "noul",
                 "instructions": (
-                    "Answer yes ONLY if the message is completely vague or off-topic and cannot be understood as a greeting, stock check, or product order."
+                    "Answer yes ONLY if the message is completely vague or off-topic and cannot be understood as a greeting, stock check, product order, or new client registration."
                 ),
             },
         },
@@ -88,12 +100,15 @@ def parse_decider_response(prompt: str, data: dict[str, Any]) -> ParsedMessage:
 
     is_ambiguous_prob = _extract_ambiguity_prob(answers.get("is_ambiguous"))
 
-    client = extract_client_name(prompt)
-    quantity, product = extract_quantity_and_product(prompt, intent)
-    if product and normalize_text(product) in ALL_AMBIGUOUS_PRODUCT_WORDS:
-        product = None
-
-    entities = ExtractedEntities(product=product, quantity=quantity, client=client)
+    if intent == "add_client":
+        entities = extract_add_client_entities(prompt)
+    else:
+        text = strip_contact_details(prompt)
+        client = extract_client_name(text)
+        quantity, product = extract_quantity_and_product(text, intent)
+        if product and normalize_text(product) in ALL_AMBIGUOUS_PRODUCT_WORDS:
+            product = None
+        entities = ExtractedEntities(product=product, quantity=quantity, client=client)
 
     # Ambiguity & confidence guardrails:
     if is_ambiguous_prob >= AMBIGUITY_PROB_THRESHOLD or confidence < MIN_CONFIDENCE_THRESHOLD:
@@ -127,7 +142,9 @@ def parse_message(prompt: str) -> ParsedMessage:
     api_key = os.getenv("OPENROUTER_API_KEY", "").strip()
     model = os.getenv("OPENROUTER_DECIDER_MODEL", DEFAULT_DECIDER_MODEL).strip() or DEFAULT_DECIDER_MODEL
 
-    if api_key:
+    if api_key and not is_add_client_request(prompt):
+        # Explicit "add client" requests are recognised locally, so the message
+        # (which usually carries personal contact data) is not sent anywhere.
         try:
             return call_openrouter_decider(prompt=prompt, api_key=api_key, model=model)
         except Exception as exc:
@@ -160,4 +177,9 @@ def format_reply(parsed: ParsedMessage, locale: str = "ro") -> str:
         if not parsed.entities.product:
             return replies["stock_query_missing_product"]
         return replies["stock_query_summary"].format(product=parsed.entities.product)
+    if parsed.intent == "add_client":
+        entities = parsed.entities
+        return replies["add_client_summary"].format(
+            client=entities.client or "-", phone=entities.phone or "-", email=entities.email or "-"
+        )
     return replies["unknown"]

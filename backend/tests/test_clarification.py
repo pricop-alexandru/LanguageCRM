@@ -7,7 +7,9 @@ from fastapi.testclient import TestClient
 import pytest
 
 from app.conversation import ConversationStore, get_conversation_store
-from app.database import Client as DBClient, Order as DBOrder, SessionLocal, init_db
+from sqlalchemy.orm import Session, sessionmaker
+
+from app.database import Client as DBClient, Order as DBOrder
 from app.dialogue import MAX_CLARIFICATION_ATTEMPTS
 from app.main import app
 
@@ -72,7 +74,7 @@ def test_missing_quantity_is_requested_and_context_is_kept(store: ConversationSt
     assert second["needs_clarification"] is False
     assert second["missing_fields"] == []
     assert second["order_ready"] is True
-    assert second["entities"] == {"product": "laptopuri", "quantity": 5, "client": "Ion Popescu"}
+    assert second["entities"] == {"product": "laptopuri", "quantity": 5, "client": "Ion Popescu", "phone": None, "email": None}
     assert second["reply"] == "Am înțeles intenția de comandă: 5x laptopuri pentru Ion Popescu."
     state = store.get(cid)
     assert state is not None and state.pending is None
@@ -94,7 +96,7 @@ def test_missing_product_and_quantity_filled_by_one_answer() -> None:
 
     answered = send("3 laptopuri", first["conversation_id"])
     assert answered["missing_fields"] == ["client"]
-    assert answered["entities"] == {"product": "laptopuri", "quantity": 3, "client": None}
+    assert answered["entities"] == {"product": "laptopuri", "quantity": 3, "client": None, "phone": None, "email": None}
 
 
 def test_missing_product_with_known_quantity() -> None:
@@ -104,7 +106,7 @@ def test_missing_product_with_known_quantity() -> None:
 
     answered = send("monitoare", first["conversation_id"])
     assert answered["missing_fields"] == ["client"]
-    assert answered["entities"] == {"product": "monitoare", "quantity": 3, "client": None}
+    assert answered["entities"] == {"product": "monitoare", "quantity": 3, "client": None, "phone": None, "email": None}
 
 
 def test_slots_can_be_filled_over_several_turns() -> None:
@@ -116,7 +118,7 @@ def test_slots_can_be_filled_over_several_turns() -> None:
     assert partial["entities"]["product"] == "tastaturi"
 
     done = send("2", cid)
-    assert done["entities"] == {"product": "tastaturi", "quantity": 2, "client": "Ion Popescu"}
+    assert done["entities"] == {"product": "tastaturi", "quantity": 2, "client": "Ion Popescu", "phone": None, "email": None}
 
 
 def test_unhelpful_answers_keep_context_then_give_up(store: ConversationStore) -> None:
@@ -156,7 +158,7 @@ def test_new_complete_order_replaces_pending_request(store: ConversationStore) -
     replaced = send("Creează o comandă de 2 monitoare", cid)
     assert replaced["order_ready"] is True
     # The client given earlier in the conversation is carried over.
-    assert replaced["entities"] == {"product": "monitoare", "quantity": 2, "client": "Ion Popescu"}
+    assert replaced["entities"] == {"product": "monitoare", "quantity": 2, "client": "Ion Popescu", "phone": None, "email": None}
     state = store.get(cid)
     assert state is not None and state.pending is None
 
@@ -179,7 +181,7 @@ def test_english_flow_uses_english_replies() -> None:
     assert first["reply"] == "How many keyboards would you like to order?"
 
     done = send("three", first["conversation_id"], locale="en")
-    assert done["entities"] == {"product": "keyboards", "quantity": 3, "client": "John Doe"}
+    assert done["entities"] == {"product": "keyboards", "quantity": 3, "client": "John Doe", "phone": None, "email": None}
     assert done["reply"] == "Order intent detected: 3x keyboards for John Doe."
 
 
@@ -206,9 +208,10 @@ def test_complete_message_needs_no_clarification(store: ConversationStore) -> No
     assert state.client == "Ion Popescu"
 
 
-def test_clarification_never_creates_partial_db_records() -> None:
-    init_db()
-    with SessionLocal() as db:
+def test_clarification_never_creates_partial_db_records(
+    test_sessionmaker: sessionmaker[Session],
+) -> None:
+    with test_sessionmaker() as db:
         clients_before = db.query(DBClient).count()
         orders_before = db.query(DBOrder).count()
 
@@ -219,7 +222,7 @@ def test_clarification_never_creates_partial_db_records() -> None:
     cid = send("Vreau să comand monitoare")["conversation_id"]
     send("anulează", cid)
 
-    with SessionLocal() as db:
+    with test_sessionmaker() as db:
         assert db.query(DBClient).count() == clients_before
         assert db.query(DBOrder).count() == orders_before
 
@@ -254,7 +257,7 @@ def test_decider_misclassified_bare_answer_still_fills_slot(monkeypatch: pytest.
     partial = send("3 tastaturi", cid)
     assert partial["intent"] == "order"
     assert partial["order_ready"] is True
-    assert partial["entities"] == {"product": "tastaturi", "quantity": 3, "client": "Ion Popescu"}
+    assert partial["entities"] == {"product": "tastaturi", "quantity": 3, "client": "Ion Popescu", "phone": None, "email": None}
 
 
 @pytest.mark.parametrize(
@@ -336,7 +339,7 @@ def test_bare_name_reply_during_clarification_sets_client() -> None:
     assert named["entities"]["client"] == "Ion Popescu"
 
     done = send("5", cid)
-    assert done["entities"] == {"product": "laptopuri", "quantity": 5, "client": "Ion Popescu"}
+    assert done["entities"] == {"product": "laptopuri", "quantity": 5, "client": "Ion Popescu", "phone": None, "email": None}
 
 
 def test_naming_client_counts_as_progress() -> None:
@@ -352,7 +355,7 @@ def test_naming_client_counts_as_progress() -> None:
 def test_bare_capitalized_reply_is_product_when_product_is_missing() -> None:
     cid = send("vreau sa comand 2")["conversation_id"]
     done = send("Dell Latitude", cid)
-    assert done["entities"] == {"product": "dell latitude", "quantity": 2, "client": None}
+    assert done["entities"] == {"product": "dell latitude", "quantity": 2, "client": None, "phone": None, "email": None}
 
 
 def test_bare_name_as_first_message_is_remembered() -> None:
