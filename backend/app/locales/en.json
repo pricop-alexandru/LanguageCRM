@@ -1,5 +1,5 @@
 {
-  "greeting": "Hello! How can I help you today? You can ask about stock or place an order.",
+  "greeting": "Hello! How can I help you today? You can ask about stock, place an order or add a client.",
   "order_missing_product": "I understood your order intent. Please specify the product and desired quantity.",
   "order_summary": "Order intent detected: {qty}{product}{client}.",
   "order_client_prefix": " for {client}",
@@ -12,6 +12,20 @@
   "clarify_stock_product": "Which product would you like me to check the stock for?",
   "clarification_cancelled": "I cancelled the request. How else can I help you?",
   "clarification_abandoned": "I couldn't understand the missing details, so I dropped this request. Please rephrase it, for example: \"I want to order 3 laptops\".",
-  "client_noted": "Thank you, {client}! How can I help you? You can ask about stock or place an order.",
-  "clarify_order_client": "Who should I place the order for ({quantity}x {product})? Please tell me the full name."
+  "client_noted": "Thank you, {client}! How can I help you? You can ask about stock, place an order or add a client.",
+  "clarify_order_client": "Who should I place the order for ({quantity}x {product})? Please tell me the full name.",
+  "add_client_summary": "I understood you want to add the client {client} (phone {phone}, email {email}).",
+  "clarify_client_details": "To create the client I need: {fields}.",
+  "clarify_client_name": "What is the client's full name?",
+  "clarify_client_phone": "What is {client}'s phone number?",
+  "clarify_client_email": "What is {client}'s email address?",
+  "field_client": "the full name",
+  "field_phone": "the phone number",
+  "field_email": "the email address",
+  "list_and": " and ",
+  "invalid_phone": "The phone number \"{value}\" doesn't look valid. Please send it again, for example: 0722 123 456.",
+  "invalid_email": "The email address \"{value}\" doesn't look valid. Please send it again, for example: name@example.com.",
+  "client_created": "I created the client {client} (phone {phone}, email {email}).",
+  "client_already_exists": "The client {client} already exists (phone {phone}, email {email}). I did not create a duplicate.",
+  "client_conflict": "The phone number or email already belongs to another registered client, so I did not create the client {client}. Please check the details and try again."
 }

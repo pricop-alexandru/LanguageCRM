@@ -30,3 +30,9 @@ class LanguagePack:
     # words that show the reply is not a name (e.g. "multumesc frumos").
     client_answer_prefix_pattern: re.Pattern[str]
     non_name_pattern: re.Pattern[str]
+    # Client creation rules (US-05)
+    add_client_keywords: re.Pattern[str]
+    # Name right after "client"/"customer" in lowercase text, e.g. "adauga clientul ion popescu".
+    new_client_name_pattern: re.Pattern[str]
+    # Words that label contact details ("telefon", "email", ...), removed before reading a name.
+    contact_label_pattern: re.Pattern[str]

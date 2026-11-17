@@ -3,10 +3,15 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 
 from app.conversation import ConversationStore, get_conversation_store
-from app.client_service import ClientIdentityConflictError, resolve_or_create_client
-from app.database import get_db, init_db
+from app.client_service import (
+    ClientIdentityConflictError,
+    MissingClientDetailsError,
+    resolve_or_create_client,
+)
+from app.database import Client, get_db, init_db
 from app.dialogue import handle_turn
 from app.schemas import (
+    ClientRecord,
     ClientResolutionRequest,
     ClientResolutionResponse,
     CommandResponse,
@@ -39,28 +44,34 @@ def resolve_client(
     data: ClientResolutionRequest, db: Session = Depends(get_db)
 ) -> ClientResolutionResponse:
     try:
-        result = resolve_or_create_client(db, data.name, data.phone)
+        result = resolve_or_create_client(db, data.name, data.phone, data.email)
     except ClientIdentityConflictError as exc:
         raise HTTPException(status_code=409, detail=str(exc)) from exc
+    except MissingClientDetailsError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
 
     if result is None:
         raise HTTPException(
-            status_code=404, detail="No client matches the supplied phone number"
+            status_code=404, detail="No client matches the supplied phone number or email"
         )
 
     client, created = result
     return ClientResolutionResponse(
-        id=client.id,
-        name=client.name,
-        email=client.email,
-        phone=client.phone,
-        created=created,
+        **ClientRecord.model_validate(client).model_dump(), created=created
     )
+
+
+@app.get("/api/clients", response_model=list[ClientRecord])
+def list_clients(db: Session = Depends(get_db)) -> list[ClientRecord]:
+    """List stored clients, newest first (used by the dashboard, US-07)."""
+    clients = db.query(Client).order_by(Client.id.desc()).all()
+    return [ClientRecord.model_validate(client) for client in clients]
 
 
 @app.post("/api/command", response_model=CommandResponse)
 def process_command(
     data: NaturalLanguagePrompt,
     store: ConversationStore = Depends(get_conversation_store),
+    db: Session = Depends(get_db),
 ) -> CommandResponse:
-    return handle_turn(data.prompt, data.locale, data.conversation_id, store)
+    return handle_turn(data.prompt, data.locale, data.conversation_id, store, db)

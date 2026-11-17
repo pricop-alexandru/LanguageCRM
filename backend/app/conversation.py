@@ -15,7 +15,7 @@ import uuid
 
 from app.schemas import ExtractedEntities, ParserSource
 
-PendingIntent = Literal["order", "stock_query"]
+PendingIntent = Literal["order", "stock_query", "add_client"]
 
 DEFAULT_TTL_SECONDS = 15 * 60
 DEFAULT_MAX_ENTRIES = 10_000

@@ -1,5 +1,6 @@
 import re
 
+from app.nlp.contact import extract_email, extract_phone, strip_contact_details
 from app.nlp.lang import ALL_AMBIGUOUS_PRODUCT_WORDS, ALL_PACKS, LanguagePack
 from app.nlp.normalizer import normalize_text, parse_quantity_text, strip_diacritics
 from app.schemas import ExtractedEntities, IntentType, ParsedMessage, SlotName
@@ -39,21 +40,65 @@ def extract_client_answer(
     lead-in ("Sunt ...", "pentru ...", "I'm ..."). Use it only when the name is the one
     thing being asked for. Returns the name title-cased, e.g. "ion popescu" -> "Ion Popescu".
     """
-    named = extract_client_name(original_text, packs)
+    text = strip_contact_details(original_text or "")
+    named = extract_client_name(text, packs)
     if named:
         return named
-    if not original_text or "?" in original_text:
+    if not text or "?" in text:
         return None
-    norm = re.sub(r"\s+", " ", re.sub(r"[!.,;:]", " ", normalize_text(original_text))).strip()
     for pack in packs:
-        candidate = pack.client_answer_prefix_pattern.sub("", norm, count=1).strip()
-        if (
-            _NAME_WORDS_PATTERN.fullmatch(candidate)
-            and candidate not in ALL_AMBIGUOUS_PRODUCT_WORDS
-            and not any(p.non_name_pattern.search(candidate) for p in packs)
-        ):
+        candidate = pack.client_answer_prefix_pattern.sub("", _name_text(text, pack), count=1).strip()
+        if _is_plausible_name(candidate, packs):
             return candidate.title()
     return None
+
+
+def _name_text(text: str, pack: LanguagePack) -> str:
+    """Normalize text for name matching: no contact labels or punctuation."""
+    body = pack.contact_label_pattern.sub(" ", normalize_text(text))
+    return re.sub(r"\s+", " ", re.sub(r"[!.,;:]", " ", body)).strip()
+
+
+def _is_plausible_name(candidate: str, packs: tuple[LanguagePack, ...]) -> bool:
+    return bool(
+        _NAME_WORDS_PATTERN.fullmatch(candidate)
+        and candidate not in ALL_AMBIGUOUS_PRODUCT_WORDS
+        and not any(p.non_name_pattern.search(candidate) for p in packs)
+    )
+
+
+def is_add_client_request(text: str, packs: tuple[LanguagePack, ...] = ALL_PACKS) -> bool:
+    """Return True if the message explicitly asks to add/register a client."""
+    norm = normalize_text(strip_contact_details(text))
+    return any(pack.add_client_keywords.search(norm) for pack in packs)
+
+
+def extract_new_client_name(
+    original_text: str, packs: tuple[LanguagePack, ...] = ALL_PACKS
+) -> str | None:
+    """Extract the name from an "add client" message, e.g. "Adaugă clientul ion popescu, 0722...".
+
+    Capitalized names are found with the usual client patterns; lowercase names are
+    accepted right after "client"/"customer" once contact details are removed.
+    """
+    text = strip_contact_details(original_text)
+    named = extract_client_name(text, packs)
+    if named:
+        return named
+    for pack in packs:
+        match = pack.new_client_name_pattern.search(_name_text(text, pack))
+        if match and _is_plausible_name(match.group(1), packs):
+            return match.group(1).title()
+    return None
+
+
+def extract_add_client_entities(prompt: str) -> ExtractedEntities:
+    """Extract the new client's name, phone number and email from a message."""
+    return ExtractedEntities(
+        client=extract_new_client_name(prompt),
+        phone=extract_phone(prompt)[0],
+        email=extract_email(prompt)[0],
+    )
 
 
 def _extract_for_pack(
@@ -137,13 +182,21 @@ def extract_quantity_and_product(
 
 def fallback_parse_message(prompt: str) -> ParsedMessage:
     """Deterministic rule-based parser for intent and entities across supported languages."""
-    norm = normalize_text(prompt)
+    # Phone numbers and emails are removed first so their digits/words never
+    # become quantities, products or intent keywords (e.g. "comenzi@firma.ro").
+    text = strip_contact_details(prompt)
+    norm = normalize_text(text)
     if not norm:
         return ParsedMessage(intent="unknown", confidence=1.0)
 
     for pack in ALL_PACKS:
         if pack.greeting_pattern.match(norm):
             return ParsedMessage(intent="greeting", confidence=0.95)
+
+    if is_add_client_request(prompt):
+        return ParsedMessage(
+            intent="add_client", confidence=0.9, entities=extract_add_client_entities(prompt)
+        )
 
     for pack in ALL_PACKS:
         has_order = bool(pack.order_keywords.search(norm))
@@ -155,7 +208,7 @@ def fallback_parse_message(prompt: str) -> ParsedMessage:
             return ParsedMessage(intent="unknown", confidence=0.4)
 
         candidate_intent: IntentType = "order" if has_order else "stock_query"
-        client = extract_client_name(prompt, (pack,)) or extract_client_name(prompt)
+        client = extract_client_name(text, (pack,)) or extract_client_name(text)
         quantity, product = _extract_for_pack(
             _TRAILING_PUNCTUATION.sub("", norm).strip(), candidate_intent, pack
         )

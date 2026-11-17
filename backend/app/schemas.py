@@ -1,12 +1,12 @@
 from typing import Literal, Self
 
-from pydantic import BaseModel, Field, field_validator, model_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
-from app.identity import normalize_phone
+from app.identity import normalize_email, normalize_phone
 
-IntentType = Literal["order", "stock_query", "greeting", "unknown"]
+IntentType = Literal["order", "stock_query", "add_client", "greeting", "unknown"]
 ParserSource = Literal["openrouter", "fallback"]
-SlotName = Literal["product", "quantity", "client"]
+SlotName = Literal["product", "quantity", "client", "phone", "email"]
 
 
 class NaturalLanguagePrompt(BaseModel):
@@ -22,6 +22,7 @@ class NaturalLanguagePrompt(BaseModel):
 class ClientResolutionRequest(BaseModel):
     name: str | None = Field(default=None, min_length=1, max_length=200)
     phone: str | None = Field(default=None, min_length=1, max_length=32)
+    email: str | None = Field(default=None, min_length=1, max_length=254)
 
     @field_validator("name")
     @classmethod
@@ -38,18 +39,30 @@ class ClientResolutionRequest(BaseModel):
     def canonicalize_phone(cls, value: str | None) -> str | None:
         return normalize_phone(value)
 
+    @field_validator("email")
+    @classmethod
+    def canonicalize_email(cls, value: str | None) -> str | None:
+        return normalize_email(value)
+
     @model_validator(mode="after")
     def require_identifier(self) -> Self:
-        if self.name is None and self.phone is None:
-            raise ValueError("Provide a client name, phone number, or both")
+        if self.name is None and self.phone is None and self.email is None:
+            raise ValueError("Provide a client name, phone number or email")
         return self
 
 
-class ClientResolutionResponse(BaseModel):
+class ClientRecord(BaseModel):
+    """A stored client as returned by the API."""
+
+    model_config = ConfigDict(from_attributes=True)
+
     id: int
     name: str | None
     email: str | None
     phone: str | None
+
+
+class ClientResolutionResponse(ClientRecord):
     created: bool
 
 
@@ -57,6 +70,10 @@ class ExtractedEntities(BaseModel):
     product: str | None = Field(default=None, description="Detected product name")
     quantity: int | None = Field(default=None, description="Detected product quantity")
     client: str | None = Field(default=None, description="Detected client full name")
+    phone: str | None = Field(
+        default=None, description="Detected phone number in canonical international form"
+    )
+    email: str | None = Field(default=None, description="Detected email address (lowercase)")
 
 
 class ParsedMessage(BaseModel):
@@ -84,4 +101,7 @@ class CommandResponse(BaseModel):
     )
     order_ready: bool = Field(
         default=False, description="True when an order request is complete and ready to be placed"
+    )
+    client_record: ClientResolutionResponse | None = Field(
+        default=None, description="The stored client, set when an add-client request completes"
     )
