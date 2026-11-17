@@ -1,10 +1,19 @@
+interface ClientRecord {
+  id: number;
+  name: string | null;
+  phone: string | null;
+  email: string | null;
+  created: boolean;
+}
+
 interface CommandResponse {
   received_prompt: string;
   reply: string;
   conversation_id: string | null;
   needs_clarification: boolean;
-  missing_fields: Array<"product" | "quantity" | "client">;
+  missing_fields: Array<"product" | "quantity" | "client" | "phone" | "email">;
   order_ready: boolean;
+  client_record: ClientRecord | null;
 }
 
 const API_BASE_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000";

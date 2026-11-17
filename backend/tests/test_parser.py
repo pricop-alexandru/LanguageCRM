@@ -4,7 +4,9 @@ from fastapi.testclient import TestClient
 import httpx
 import pytest
 
-from app.database import Client as DBClient, Order as DBOrder, SessionLocal, init_db
+from sqlalchemy.orm import Session, sessionmaker
+
+from app.database import Client as DBClient, Order as DBOrder
 from app.main import app
 from app.nlp.parser import parse_message
 
@@ -67,27 +69,27 @@ def test_romanian_intents_with_and_without_diacritics(
         (
             "Create an order of 3 laptops for John Doe",
             "order",
-            {"product": "laptops", "quantity": 3, "client": "John Doe"},
+            {"product": "laptops", "quantity": 3, "client": "John Doe", "phone": None, "email": None},
         ),
         (
             "I am Jane Smith and I want to buy two monitors",
             "order",
-            {"product": "monitors", "quantity": 2, "client": "Jane Smith"},
+            {"product": "monitors", "quantity": 2, "client": "Jane Smith", "phone": None, "email": None},
         ),
         (
             "How many keyboards do you have in stock?",
             "stock_query",
-            {"product": "keyboards", "quantity": None, "client": None},
+            {"product": "keyboards", "quantity": None, "client": None, "phone": None, "email": None},
         ),
         (
             "Good morning!",
             "greeting",
-            {"product": None, "quantity": None, "client": None},
+            {"product": None, "quantity": None, "client": None, "phone": None, "email": None},
         ),
         (
             "I want to order something",
             "order",
-            {"product": None, "quantity": None, "client": None},
+            {"product": None, "quantity": None, "client": None, "phone": None, "email": None},
         ),
     ],
 )
@@ -114,6 +116,8 @@ def test_order_entity_extraction_digits_and_words() -> None:
         "product": "laptopuri",
         "quantity": 3,
         "client": "Ion Popescu",
+        "phone": None,
+        "email": None,
     }
 
     res2 = client.post(
@@ -126,6 +130,8 @@ def test_order_entity_extraction_digits_and_words() -> None:
         "product": "monitoare",
         "quantity": 2,
         "client": "Maria Ionescu",
+        "phone": None,
+        "email": None,
     }
 
 
@@ -136,9 +142,10 @@ def test_stock_query_entity_extraction() -> None:
     assert payload["entities"]["product"] == "telefoane"
 
 
-def test_ambiguous_text_returns_unknown_and_does_not_modify_db() -> None:
-    init_db()
-    with SessionLocal() as db:
+def test_ambiguous_text_returns_unknown_and_does_not_modify_db(
+    test_sessionmaker: sessionmaker[Session],
+) -> None:
+    with test_sessionmaker() as db:
         clients_before = db.query(DBClient).count()
         orders_before = db.query(DBOrder).count()
 
@@ -170,7 +177,7 @@ def test_ambiguous_text_returns_unknown_and_does_not_modify_db() -> None:
         assert payload["entities"]["product"] is None
         assert payload["order_ready"] is False
 
-    with SessionLocal() as db:
+    with test_sessionmaker() as db:
         clients_after = db.query(DBClient).count()
         orders_after = db.query(DBOrder).count()
 

@@ -165,7 +165,7 @@ Prioritățile sunt exprimate prin etichetele `p/high`, `p/medium` și `p/low`:
 
 - [ ] Se extrag numele, telefonul și emailul din conversație.
 - [ ] Clientul este salvat în baza de date SQLite.
-- [ ] Numele și telefonul sunt obligatorii; datele invalide produc o cerere de clarificare.
+- [ ] Numele, telefonul și emailul sunt obligatorii; datele lipsă sau invalide produc o cerere de clarificare.
 - [ ] Clientul creat apare în dashboard.
 
 **Referințe:** CF-02, CF-03
