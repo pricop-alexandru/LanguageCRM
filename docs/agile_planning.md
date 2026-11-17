@@ -59,7 +59,8 @@ Prioritățile sunt exprimate prin etichetele `p/high`, `p/medium` și `p/low`:
 | US-15 | PBI-15 | Istoricul comenzilor clientului și recomandări | Automatizarea Comenzilor | Mică | 5 |
 | US-16 | PBI-16 | Decizia de utilizare a tool-urilor de personalizare | Automatizarea Comenzilor | Mică | 8 |
 | US-17 | PBI-17 | Alertă vizuală pentru stoc critic | Alerte & Administrare Excepții | Medie | 3 |
-| | | **Total** | | | **91** |
+| US-18 | PBI-18 | Localizare/internaționalizare | Chatbot & Limbaj Natural | Medie | 3 |
+| | | **Total** | | | **94** |
 
 ---
 
@@ -135,6 +136,20 @@ Prioritățile sunt exprimate prin etichetele `p/high`, `p/medium` și `p/low`:
 - [ ] Nu se creează comenzi parțiale în baza de date.
 
 **Referințe:** CF-02
+
+#### US-18 — Localizare/internaționalizare
+
+**Modul:** Chatbot & Limbaj Natural  
+**Prioritate:** Medie (`p/medium`)  
+**Estimare:** 3 story points
+
+**User story:** Ca sistem, pot să recunosc, atât mesajele în română, cât și pe cele în engleză.
+
+**Criterii de acceptare:**
+
+- [ ] Mesajul trimis este procesat în ambele limbi.
+
+**Referințe:** CF-10
 
 ### Modulul 2: Clienți & CRM
 

@@ -43,6 +43,7 @@ Sistemul deservește trei categorii principale de utilizatori (inclusiv actori a
 * **CF-07 (Dashboard de vizualizare):** O pagină secundară afișează tabelele clasice cu clienți, comenzi și stocuri pentru monitorizarea generală.
 * **CF-08 (Rapoarte stoc):** Managerul poate vizualiza rapoarte legate de datele relevante din baza de date a produselor, la fel si date sau metrici despre utilizatori.
 * **CF-09 (Vizualizare produse):** Utilizatorul poate vizualiza produsele disponibile, la fel si vizibilitatea lor in functie de stoc.
+* **CF-10 (Recunoaștere limbaj):** Sistemul trebuie să recunoască și să răspundă la cerințe, atât în engleză, cât și în română.
 
 ### 4.2. Cerințe Nefuncționale (Non-Functional Requirements)
 * **CNF-01 (Performanță):** Timpul de răspuns al chatbotului la o comandă text nu trebuie să depășească 2 secunde în mediul local Docker.
